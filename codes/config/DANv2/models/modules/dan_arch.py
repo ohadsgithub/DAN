@@ -3,23 +3,104 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from utils import PCAEncoder
+import math
 
+def _make_divisible(v, divisor, min_value=None):
+    """
+    This function is taken from the original tf repo.
+    It ensures that all layers have a channel number that is divisible by 8
+    It can be seen here:
+    https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet/mobilenet.py
+    :param v:
+    :param divisor:
+    :param min_value:
+    :return:
+    """
+    if min_value is None:
+        min_value = divisor
+    new_v = max(min_value, int(v + divisor / 2) // divisor * divisor)
+    # Make sure that round down does not go down by more than 10%.
+    if new_v < 0.9 * v:
+        new_v += divisor
+    return new_v
 
-class DPCB(nn.Module):
-    def __init__(self, nf1, nf2, ksize1=3, ksize2=1):
+class DPCB_bottleneck(nn.Module):
+    def __init__(self, nf, ksize, expand_ratio):
         super().__init__()
-
-        self.body1 = nn.Sequential(
-            nn.Conv2d(nf1, nf1, ksize1, 1, ksize1 // 2),
+        hidden_dim = round(nf * expand_ratio)
+        self.conv = nn.Sequential(
+            # pw
+            nn.Conv2d(nf, hidden_dim, 1, 1, 0, bias=False),
+            nn.LeakyReLU(0.5, True), #unnecessary relu? 0.2 or 0.5?
+            # dw
+            nn.Conv2d(hidden_dim, hidden_dim, ksize, 1, ksize // 2, groups=hidden_dim),
             nn.LeakyReLU(0.2, True),
-            nn.Conv2d(nf1, nf1, ksize1, 1, ksize1 // 2),
+            # pw-linear
+            nn.Conv2d(hidden_dim, nf, 1, 1, 0, bias=False),
         )
 
-        self.body2 = nn.Sequential(
-            nn.Conv2d(nf2, nf1, ksize2, 1, ksize2 // 2),
-            nn.LeakyReLU(0.2, True),
-            nn.Conv2d(nf1, nf1, ksize2, 1, ksize2 // 2),
-        )
+    def forward(self, x):
+        return x + self.conv(x)
+
+class DPCB_MNv2_simple_half(nn.Module):
+    def __init__(self, nf, ksize=3, expand_ratio=1.): # , width_mult=1.
+        super().__init__()
+        #super(InvertedResidual, self).__init__()
+
+        hidden_dim = round(nf * expand_ratio)
+
+        if expand_ratio == 1:
+            self.body = nn.Sequential(
+                # dw
+                nn.Conv2d(hidden_dim, hidden_dim, ksize, 1, ksize // 2, groups=hidden_dim),
+                nn.LeakyReLU(0.5, True), #unnecessary relu? 0.2 or 0.5?
+                # pw-linear
+                nn.Conv2d(hidden_dim, hidden_dim, 1, 1, 0, bias=False),
+
+                nn.LeakyReLU(0.2, True),
+
+                nn.Conv2d(hidden_dim, hidden_dim, ksize, 1, ksize // 2, groups=hidden_dim),
+                nn.LeakyReLU(0.5, True), #unnecessary relu? 0.2 or 0.5?
+                # pw-linear
+                nn.Conv2d(hidden_dim, hidden_dim, 1, 1, 0, bias=False),
+            )
+        else:
+            self.body = nn.Sequential(
+                DPCB_bottleneck(self, nf, ksize, expand_ratio),
+                #put batch norm here?
+
+                # pw
+                nn.Conv2d(nf, hidden_dim, 1, 1, 0, bias=False),
+                nn.LeakyReLU(0.5, True), #unnecessary relu? 0.2 or 0.5?
+                # dw
+                nn.Conv2d(hidden_dim, hidden_dim, ksize, 1, ksize // 2, groups=hidden_dim),
+                nn.LeakyReLU(0.2, True),
+                # pw-linear
+                nn.Conv2d(hidden_dim, nf, 1, 1, 0, bias=False),
+            )
+    def forward(self, x):
+        return self.body(x)
+
+class DPCB_MNv2_simple(nn.Module):
+    def __init__(self, nf1, nf2, ksize1=3, ksize2=1, expand_ratio_B=1., expand_ratio_C=1.): # , width_mult=1.
+        super().__init__()
+        #super(InvertedResidual, self).__init__()
+
+        #hidden_dim1 = round(nf1 * expand_ratio_B)
+        #hidden_dim2 = round(nf2 * expand_ratio_C)
+        #self.identity1 = expand_ratio_C != 1
+        #self.identity2 = expand_ratio_B != 1
+
+        self.body1 = DPCB_MNv2_simple_half(nf1, ksize1, expand_ratio_B) # need sequential?
+
+        if ksize2 == 1:
+            self.body2 = nn.Sequential(
+                nn.Conv2d(nf2, nf1, ksize2, 1, ksize2 // 2),
+                nn.LeakyReLU(0.2, True),
+                nn.Conv2d(nf1, nf1, ksize2, 1, ksize2 // 2),
+            )
+        else:
+            self.body2 = DPCB_MNv2_simple_half(nf2, ksize2, expand_ratio_C)  # need sequential?
 
     def forward(self, x):
 
@@ -30,12 +111,11 @@ class DPCB(nn.Module):
         x[1] = x[1] + f2
         return x
 
-
-class DPCG(nn.Module):
-    def __init__(self, nf1, nf2, ksize1, ksize2, nb):
+class DPCG_MNv2_simple(nn.Module):
+    def __init__(self, nf1, nf2, ksize1, ksize2, nb, expand_ratio_B=1., expand_ratio_C=1.):
         super().__init__()
 
-        self.body = nn.Sequential(*[DPCB(nf1, nf2, ksize1, ksize2) for _ in range(nb)])
+        self.body = nn.Sequential(*[DPCB_MNv2_simple(nf1, nf2, ksize1, ksize2, expand_ratio_B, expand_ratio_C) for _ in range(nb)])
 
     def forward(self, x):
         y = self.body(x)
@@ -78,30 +158,37 @@ class CenterCrop(nn.Module):
 
         x = x[:, :, sth:edh, stw:edw]
 
-        return xs
+        return xs # return x?
 
 
 class Estimator(nn.Module):
     def __init__(
-        self, in_nc=1, nf=64, para_len=10, num_blocks=5, scale=4, kernel_size=4
+        self, in_nc=1, nf=64, para_len=10, num_blocks=5, scale=4, kernel_size=4, width_mult_E_B=1. , width_mult_E_C=1. , expand_ratio_E_B=1., expand_ratio_E_C=1.
     ):
         super(Estimator, self).__init__()
+
+        #nf= = _make_divisible(nf * width_mult_E, 4 if width_mult == 0.1 else 8)
+        nf_B= _make_divisible(nf * width_mult_E_B, 4 if width_mult_E_B == 0.1 else 8)
+        nf_C= _make_divisible(nf * width_mult_E_C, 4 if width_mult_E_C == 0.1 else 8)
 
         self.ksize = kernel_size
 
         self.head_LR = nn.Sequential(
             # CenterCrop(self.ksize + scale),
-            nn.Conv2d(in_nc, nf // 2, 5, 1, 2)
+            nn.Conv2d(in_nc, nf_B // 2, 5, 1, 2)
         )
         self.head_HR = nn.Sequential(
             # CenterCrop(self.ksize + scale),
-            nn.Conv2d(in_nc, nf // 2, scale * 4 + 1, scale, scale * 2),
+            nn.Conv2d(in_nc, nf_C // 2, scale * 4 + 1, scale, scale * 2),
         )
 
-        self.body = DPCG(nf // 2, nf // 2, 3, 3, num_blocks)
+        #num_blocks = 5
+
+        #why // 2 ?
+        self.body = DPCG_MNv2_simple(nf_B // 2, nf_C // 2, 3, 3, num_blocks, expand_ratio_E_B, expand_ratio_E_C)
 
         self.tail = nn.Sequential(
-            nn.Conv2d(nf // 2, nf, 3, 1, 1),
+            nn.Conv2d(nf_B // 2, nf, 3, 1, 1),
             nn.AdaptiveAvgPool2d(1),
             nn.Conv2d(nf, self.ksize ** 2, 1, 1, 0),
             nn.Softmax(1),
@@ -120,7 +207,7 @@ class Estimator(nn.Module):
 
 class Restorer(nn.Module):
     def __init__(
-        self, in_nc=1, nf=64, nb=8, ng=1, scale=4, input_para=10, min=0.0, max=1.0
+        self, in_nc=1, nf=64, nb=8, ng=1, scale=4, input_para=10, min=0.0, max=1.0, width_mult_R_B=1. , width_mult_R_C=1., expand_ratio_R_B=1., expand_ratio_R_C=1.
     ):
         super(Restorer, self).__init__()
         self.min = min
@@ -128,15 +215,24 @@ class Restorer(nn.Module):
         self.para = input_para
         self.num_blocks = nb
 
+        #assert expand_ratio_R_C
+        expand_ratio_R_C=1.
+
+        # nf= = _make_divisible(nf * width_mult_E, 4 if width_mult == 0.1 else 8)
+        nf_B = _make_divisible(nf * width_mult_R_B, 4 if width_mult_R_B == 0.1 else 8)
+        nf_C = _make_divisible(nf * width_mult_R_C, 4 if width_mult_R_C == 0.1 else 8)
+
         out_nc = in_nc
+        #in_nc=1????
 
-        self.head1 = nn.Conv2d(in_nc, nf, 3, stride=1, padding=1)
-        self.head2 = nn.Conv2d(input_para, nf, 1, 1, 0)
+        self.head1 = nn.Conv2d(in_nc, nf_B, 3, stride=1, padding=1) #LR - basic
+        self.head2 = nn.Conv2d(input_para, nf_C, 1, 1, 0) #kernel - conditional
 
-        body = [DPCG(nf, nf, 3, 1, nb) for _ in range(ng)]
+        #here its not //2
+        body = [DPCG_MNv2_simple(nf_B, nf_C, 3, 1, nb, expand_ratio_R_B, expand_ratio_R_C) for _ in range(ng)]
         self.body = nn.Sequential(*body)
 
-        self.fusion = nn.Conv2d(nf, nf, 3, 1, 1)
+        self.fusion = nn.Conv2d(nf_B, nf, 3, 1, 1)
 
         if scale == 4:  # x4
             self.upscale = nn.Sequential(
@@ -207,15 +303,31 @@ class DAN(nn.Module):
     ):
         super(DAN, self).__init__()
 
+        #assert nb #####################################
+        #assert ng #################
+        #loop ###################
+        #estimator_nb
+        width_mult_R_B=1.
+        width_mult_R_C=1.
+        width_mult_E_B=1.
+        width_mult_E_C=1.
+        expand_ratio_R_B=1.
+        expand_ratio_R_C=1. #should always be 1?
+        expand_ratio_E_B=1.
+        expand_ratio_E_C=1.
+
+
         self.ksize = kernel_size
         self.loop = loop
         self.scale = upscale
 
         self.Restorer = Restorer(
-            nf=nf, in_nc=in_nc, nb=nb, ng=ng, scale=self.scale, input_para=input_para
+            nf=nf, in_nc=in_nc, nb=nb, ng=ng, scale=self.scale, input_para=input_para, width_mult_R_B=width_mult_R_B,
+            width_mult_R_C=width_mult_R_C, expand_ratio_R_B=expand_ratio_R_B, expand_ratio_R_C=expand_ratio_R_C
         )
         self.Estimator = Estimator(
-            kernel_size=kernel_size, para_len=input_para, in_nc=in_nc, scale=self.scale
+            kernel_size=kernel_size, para_len=input_para, in_nc=in_nc, scale=self.scale, width_mult_E_B=width_mult_E_B,
+            width_mult_E_C=width_mult_E_C, expand_ratio_E_B=expand_ratio_E_B, expand_ratio_E_C=expand_ratio_E_C
         )
 
         self.register_buffer("encoder", torch.load(pca_matrix_path)[None])

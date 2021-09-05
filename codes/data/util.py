@@ -305,6 +305,12 @@ def imresize(img, scale, antialiasing=True):
     # input: img: CHW RGB [0,1]
     # output: CHW RGB [0,1] w/o round
     is_numpy = False
+
+    #print("imresize called")
+
+    #cv2.imshow('image', img)
+    #cv2.waitKey(0)
+
     if isinstance(img, np.ndarray):
         img = torch.from_numpy(img.transpose(2, 0, 1))
         is_numpy = True
@@ -378,8 +384,14 @@ def imresize(img, scale, antialiasing=True):
             weights_W[i][None,:,None].repeat(B*in_C, 1, 1))).squeeze()
 
     out_2 = out_2.contiguous().view(B, in_C, out_H, out_W)
+
     if not is_batch:
         out_2 = out_2[0]
+
+    #cv2.imshow('image', out_2.cpu().numpy().transpose(1, 2, 0))
+    #cv2.imshow('image', out_2.cpu().numpy())
+    #cv2.waitKey(0)
+
     return out_2.cpu().numpy().transpose(1, 2, 0) if is_numpy else out_2
 
     ### Load data kernel map ###

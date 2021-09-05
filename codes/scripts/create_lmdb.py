@@ -5,6 +5,7 @@ import glob
 import pickle
 import lmdb
 import cv2
+import numpy as np
 
 try:
     sys.path.append(osp.dirname(osp.dirname(osp.abspath(__file__))))
@@ -14,16 +15,21 @@ except ImportError:
 
 # configurations
 # img_folder = '/data/DIV2K/DIV2K_train/LR/x4/*'  # glob matching pattern
-img_folder = "/data/rolf48/blurry/*"
+#img_folder = "C:/tapMobileProj/dataset/united_noVal/LRblur/*"
+#img_folder = "C:/tapMobileProj/dataset/united_noVal/LRblur/x2/*" # was "/data/rolf48/blurry/*"
 # lmdb_save_path = '/data/DIV2K/DIV2K_train_LR_sub.lmdb'
-lmdb_save_path = "/data/rolf48/blurry.lmdb"
-meta_info = {"name": "rolf48"}
+#lmdb_save_path = "C:/tapMobileProj/dataset/united_noVal/LRblur.lmdb" # was "/data/rolf48/blurry.lmdb*"
+
+img_folder = "C:/tapMobileProj/dataset/data_resized_side/x3ds/Bic/x2/*" # was "/data/rolf48/blurry/*"
+lmdb_save_path = "C:/tapMobileProj/dataset/data_resized_side/x3ds/Bic.lmdb" # was "/data/rolf48/blurry.lmdb*" no *?
+
+meta_info = {"name": "x3ds"}
 
 mode = (
     2  # 1 for reading all the images to memory and then writing to lmdb (more memory);
 )
 # 2 for reading several images and then writing to lmdb, loop over (less memory)
-batch = 1000  # Used in mode 2. After batch images, lmdb commits.
+batch = 200  # Used in mode 2. After batch images, lmdb commits.
 ###########################################
 if not lmdb_save_path.endswith(".lmdb"):
     raise ValueError("lmdb_save_path must end with 'lmdb'.")
@@ -45,6 +51,9 @@ else:
 key_l = []
 resolution_l = []
 pbar = ProgressBar(len(img_list))
+
+print(len(img_list))
+
 env = lmdb.open(lmdb_save_path, map_size=data_size * 10)
 txn = env.begin(write=True)  # txn is a Transaction object
 for i, v in enumerate(img_list):
@@ -52,6 +61,9 @@ for i, v in enumerate(img_list):
     base_name = osp.splitext(osp.basename(v))[0]
     key = base_name.encode("ascii")
     data = dataset[i] if mode == 1 else cv2.imread(v, cv2.IMREAD_UNCHANGED)
+
+    print(v)
+
     if data.ndim == 2:
         H, W = data.shape
         C = 1

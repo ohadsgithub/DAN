@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 try:
-    sys.path.append('..')
+    sys.path.append("C:/tapMobileProj/projOriginal/DAN-master/codes") # was "..'
     from data.util import imresize
     import utils as util
 except ImportError:
@@ -13,16 +13,16 @@ except ImportError:
 
 def generate_mod_LR_bic():
     # set parameters
-    up_scale = 4
-    mod_scale = 4
+    up_scale = 2 # was 4
+    mod_scale = 2 # was 4
     # set data dir
-    sourcedir = "/data/Set5/source/"
-    savedir = "/data/Set5/"
+    sourcedir = "C:/tapMobileProj/dataset/united_noVal/source" # why /? was "/data/Set5/source/"
+    savedir = "C:/tapMobileProj/dataset/united_noVal" # was "/data/Set5/"
 
     # load PCA matrix of enough kernel
     print("load PCA matrix")
     pca_matrix = torch.load(
-        "../../pca_matrix.pth", map_location=lambda storage, loc: storage
+        "C:/tapMobileProj/projOriginal/DAN-master/pca_matrix/DANv2/pca_matrix.pth", map_location=lambda storage, loc: storage #was "../../pca_matrix.pth"
     )
     print("PCA matrix shape: {}".format(pca_matrix.shape))
 
@@ -33,7 +33,7 @@ def generate_mod_LR_bic():
         "pca_matrix": pca_matrix,
         "scale": up_scale,
         "cuda": True,
-        "rate_iso", 1.0
+        "rate_iso": 1.0 # was ""rate_iso", 1.0" for some reason
     }
 
     # set random seed
@@ -83,7 +83,7 @@ def generate_mod_LR_bic():
     print(filepaths)
     num_files = len(filepaths)
 
-    # kernel_map_tensor = torch.zeros((num_files, 1, 10)) # each kernel map: 1*10
+    kernel_map_tensor = torch.zeros((num_files, 1, 10)) # each kernel map: 1*10
 
     # prepare data with augementation
     
@@ -121,9 +121,9 @@ def generate_mod_LR_bic():
         cv2.imwrite(os.path.join(saveLRpath, filename), image_LR)
         cv2.imwrite(os.path.join(saveBicpath, filename), image_Bic)
 
-        # kernel_map_tensor[i] = ker_map
+        kernel_map_tensor[i] = ker_map
     # save dataset corresponding kernel maps
-    # torch.save(kernel_map_tensor, './Set5_sig2.6_kermap.pth')
+    torch.save(kernel_map_tensor, "C:/tapMobileProj/dataset/united_noVal/Kernels/unitedKermap.pth") # was ./Set5_sig2.6_kermap.pth
     print("Image Blurring & Down smaple Done: X" + str(up_scale))
 
 
