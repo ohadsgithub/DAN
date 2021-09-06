@@ -1,5 +1,5 @@
 #### general settings
-name: DANx2_setting1
+name: DANx2_setting1_google
 use_tb_logger: true
 model: blind
 distortion: sr
