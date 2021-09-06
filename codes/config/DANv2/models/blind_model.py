@@ -251,5 +251,8 @@ class B_Model(BaseModel):
     def save(self, iter_label):
         self.save_network(self.netG, "G", iter_label)
         
+        
     def makeONNX(self):
         #copy1=nn.DataParallel(self.netG)
+        self.netG.eval() # maybe its already at eval?
+        
