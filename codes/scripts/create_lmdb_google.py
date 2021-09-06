@@ -20,7 +20,7 @@ img_folder = "/content/drive/MyDrive/tapmobileTestProj/trainData/justHRforLMDB/H
 #lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LRblur.lmdb"
 lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/trainData/justHRforLMDB/HRx2.lmdb"
 
-meta_info = {"name": "united_noval"}
+meta_info = {"name": "HRx2_3450"}
 
 mode = (
     2  # 1 for reading all the images to memory and then writing to lmdb (more memory);
