@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 try:
-    sys.path.append('..')
+    sys.path.append("/content/DAN/codes")
     from data.util import imresize
     import utils as util
 except ImportError:
@@ -13,16 +13,16 @@ except ImportError:
 
 def generate_mod_LR_bic():
     # set parameters
-    up_scale = 4
-    mod_scale = 4
+    up_scale = 2
+    mod_scale = 2
     # set data dir
-    sourcedir = "/data/Set5/source/"
-    savedir = "/data/Set5/"
+    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/source"
+    savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal"
 
     # load PCA matrix of enough kernel
     print("load PCA matrix")
     pca_matrix = torch.load(
-        "../../pca_matrix.pth", map_location=lambda storage, loc: storage
+        "/content/DAN/pca_matrix/DANv2/pca_matrix.pth", map_location=lambda storage, loc: storage
     )
     print("PCA matrix shape: {}".format(pca_matrix.shape))
 
