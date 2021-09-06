@@ -7,6 +7,8 @@ import torch.nn.functional as F
 import torch.nn.init as init
 from torch.nn.parallel import DataParallel, DistributedDataParallel
 
+import torch.onnx
+
 import models.lr_scheduler as lr_scheduler
 import models.networks as networks
 from models.modules.loss import CharbonnierLoss
@@ -248,3 +250,6 @@ class B_Model(BaseModel):
 
     def save(self, iter_label):
         self.save_network(self.netG, "G", iter_label)
+        
+    def makeONNX(self):
+        #copy1=nn.DataParallel(self.netG)
