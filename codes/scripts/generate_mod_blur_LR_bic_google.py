@@ -33,7 +33,7 @@ def generate_mod_LR_bic():
         "pca_matrix": pca_matrix,
         "scale": up_scale,
         "cuda": True,
-        "rate_iso", 1.0
+        "rate_iso": 1.0  # ,?
     }
 
     # set random seed
