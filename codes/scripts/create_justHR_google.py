@@ -64,7 +64,7 @@ def create_justHR_google():
         # kernel_map_tensor[i] = ker_map
     # save dataset corresponding kernel maps
     # torch.save(kernel_map_tensor, './Set5_sig2.6_kermap.pth')
-    print("Image Blurring & Down smaple Done: X" + str(up_scale))
+    print("HR slight change Done: X" + str(up_scale))
 
 
 if __name__ == "__main__":
