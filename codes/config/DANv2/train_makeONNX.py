@@ -274,6 +274,14 @@ def main():
                     # LR_img, ker_map = prepro(val_data['GT'])
                     LR_img = val_data["LQ"]
                     lr_img = util.tensor2img(LR_img)  # save LR image for reference
+                    
+                    
+                    
+                    if idx==0:
+                        sampleInput=LR_img
+                        #print(list(sampleInput.size()))
+                    
+                    
 
                     # valid Predictor
                     model.feed_data(LR_img, val_data["GT"])
@@ -348,6 +356,9 @@ def main():
     
     #start creating ONNX here
     #model=nn.DataParallel(model)
+    
+    #model.makeONNX(sampleInput)
+    print(list(sampleInput.size()))
 
 
 if __name__ == "__main__":
