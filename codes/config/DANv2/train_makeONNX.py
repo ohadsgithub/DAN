@@ -12,6 +12,11 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 from IPython import embed
 
+
+import torch.onnx
+import torch.nn as nn
+
+
 import options as option
 from models import create_model
 
@@ -342,6 +347,7 @@ def main():
     
     
     #start creating ONNX here
+    #model=nn.DataParallel(model)
 
 
 if __name__ == "__main__":
