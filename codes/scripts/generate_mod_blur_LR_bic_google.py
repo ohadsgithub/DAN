@@ -16,9 +16,12 @@ def generate_mod_LR_bic():
     up_scale = 2
     mod_scale = 2
     # set data dir
-    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/source"
-    savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal"
-
+    #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/source"
+    #savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal"
+    
+    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/source"
+    savedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid"
+    
     # load PCA matrix of enough kernel
     print("load PCA matrix")
     pca_matrix = torch.load(
