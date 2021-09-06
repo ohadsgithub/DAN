@@ -5,7 +5,7 @@ model: blind
 distortion: sr
 scale: 2
 gpu_ids: [0, 1, 2, 3, 4, 5, 6, 7]
-pca_matrix_path: ../../../pca_matrix/DANv2/pca_matrix.pth
+pca_matrix_path: /content/DAN/pca_matrix/DANv2/pca_matrix.pth
 
 degradation:
   random_kernel: True
@@ -19,9 +19,9 @@ degradation:
 #### datasets
 datasets:
   train:
-    name: DIV2K
+    name: HRx2_3450
     mode: GT
-    dataroot_GT: /data/DIV2K_Flickr2K/x2HR.lmdb
+    dataroot_GT: /content/drive/MyDrive/tapmobileTestProj/trainData/justHRforLMDB/HRx2.lmdb
 
     use_shuffle: true
     n_workers: 8  # per GPU
@@ -60,7 +60,7 @@ train:
   lr_scheme: MultiStepLR
   beta1: 0.9
   beta2: 0.99
-  niter: 800000
+  niter: 192
   warmup_iter: -1  # no warm up
   lr_steps: [200000, 400000, 600000]
   lr_gamma: 0.5
