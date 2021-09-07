@@ -1,5 +1,5 @@
 #### general settings
-name: DANx2_setting1_google
+name: DANx2_setting1_google_x2ds
 use_tb_logger: true
 model: blind
 distortion: sr
@@ -32,10 +32,10 @@ datasets:
     use_rot: true
     color: RGB
   val:
-    name: DIV2K_valid
+    name: DIV2K_valid_x2ds
     mode: LQGT
-    dataroot_GT: /content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/HRx2.lmdb
-    dataroot_LQ: /content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/LRblurx2.lmdb
+    dataroot_GT: /content/drive/MyDrive/tapmobileTestProj//valData/DIV2K_valid_x2ds/HRx2.lmdb
+    dataroot_LQ: /content/drive/MyDrive/tapmobileTestProj//valData/DIV2K_valid_x2ds/LRblurx2.lmdb
 
 #### network structures
 network_G:
