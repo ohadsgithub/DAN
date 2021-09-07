@@ -15,12 +15,12 @@ except ImportError:
 # configurations
 # img_folder = '/data/DIV2K/DIV2K_train/LR/x4/*'  # glob matching pattern
 #img_folder = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LRblur/x2/*"
-img_folder = "/content/drive/MyDrive/tapmobileTestProj/trainData/justHRforLMDB/HR/x2/*"
+img_folder = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/LRblur/x2/*"
 # lmdb_save_path = '/data/DIV2K/DIV2K_train_LR_sub.lmdb'
 #lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LRblur.lmdb"
-lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/trainData/justHRforLMDB/HRx2.lmdb"
+lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/LRblurx2.lmdb"
 
-meta_info = {"name": "HRx2_3450"}
+meta_info = {"name": "DIV2K_valid"}
 
 mode = (
     2  # 1 for reading all the images to memory and then writing to lmdb (more memory);
