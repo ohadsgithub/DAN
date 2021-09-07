@@ -279,7 +279,7 @@ def main():
                     
                     if idx==0:
                         sampleInput=LR_img
-                        #print(list(sampleInput.size()))
+                        print(list(sampleInput.size()))
                     
                     
 
@@ -358,7 +358,7 @@ def main():
     #model=nn.DataParallel(model)
     
     #model.makeONNX(sampleInput)
-    print(list(sampleInput.size()))
+    #print(list(sampleInput.size()))
 
 
 if __name__ == "__main__":
