@@ -20,7 +20,8 @@ img_folder = "/content/drive/MyDrive/tapmobileTestProj/data_resized/x2HR_forLMDB
 # lmdb_save_path = '/data/DIV2K/DIV2K_train_LR_sub.lmdb'
 #lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LRblur.lmdb"
 #lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/HRx2.lmdb"
-lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/data_resized/x2HR_forLMDB/HRx2.lmdb"
+#lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/data_resized/x2HR_forLMDB/HRx2.lmdb"
+lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/data_resized/HRx2.lmdb"
 
 meta_info = {"name": "x2HR_x2ds"}
 
