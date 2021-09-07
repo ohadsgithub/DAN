@@ -33,11 +33,12 @@ class MultiStepLR_Restart(_LRScheduler):
             weight = self.restart_weights[self.restarts.index(self.last_epoch)]
             
             
-            print(type(weight))
-            
+            #print(type(weight))
             
             return [
-                group["initial_lr"] * weight for group in self.optimizer.param_groups
+                #group["initial_lr"] * weight for group in self.optimizer.param_groups
+                0.0004 * weight for group in self.optimizer.param_groups
+                #the article says the initial learning rate is 0.0004
             ]
         if self.last_epoch not in self.milestones:
             return [group["lr"] for group in self.optimizer.param_groups]
