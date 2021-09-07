@@ -280,7 +280,7 @@ def main():
                     if idx==0:
                         sampleInput=LR_img
                         print(list(sampleInput.size()))
-                        print(gfdfhejhj)
+                        #print(gfdfhejhj)
                     
                     
 
