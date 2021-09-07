@@ -14,12 +14,14 @@ except ImportError:
 
 def downsizeimages_forceful():
     # set parameters
-    up_scale = 2  # was 4
-    mod_scale = 2  # was 4
+    up_scale = 4  # was 4
+    mod_scale = 4  # was 4
     # set data dir
     #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/source"  # why /? was "/data/Set5/source/"
-    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LR/x2"
-    savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized"  # was "/data/Set5/"    extra / ?
+    #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LR/x2"
+    #savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized"  # was "/data/Set5/"    extra / ?
+    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/source"
+    savedir = "/content/drive/MyDrive/tapmobileTestProj/valData"
 
     # load PCA matrix of enough kernel
     print("load PCA matrix")
