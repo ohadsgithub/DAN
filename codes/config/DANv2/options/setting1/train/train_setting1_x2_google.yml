@@ -32,10 +32,10 @@ datasets:
     use_rot: true
     color: RGB
   val:
-    name: DIV2KRK
+    name: DIV2K_valid
     mode: LQGT
-    dataroot_GT: /data/Set5/x2HRblur.lmdb
-    dataroot_LQ: /data/Set5/x2LRblur.lmdb
+    dataroot_GT: /content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/HRx2.lmdb
+    dataroot_LQ: /content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/LRblurx2.lmdb
 
 #### network structures
 network_G:
