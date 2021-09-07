@@ -24,8 +24,11 @@ def create_justHR_google():
     #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/LR/x2"
     #savedir = "/content/drive/MyDrive/tapmobileTestProj/valData"
     
-    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x4ds/source"
-    savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized"
+    #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x4ds/source"
+    #savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized"
+    
+    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/x4ds_tmp/x4"
+    savedir = "/content/drive/MyDrive/tapmobileTestProj/valData"
 
     saveHRpath = os.path.join(savedir, "HR", "x" + str(mod_scale))
     
