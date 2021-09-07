@@ -17,12 +17,12 @@ except ImportError:
 #img_folder = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LRblur/x2/*"
 #img_folder = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/HR/x2/*"
 #img_folder = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2HR_forLMDB/HR/x2/*"
-img_folder = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid_x2ds//HR/x2/*"
+img_folder = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid_x2ds//LRblur/x2/*"
 # lmdb_save_path = '/data/DIV2K/DIV2K_train_LR_sub.lmdb'
 #lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/LRblur.lmdb"
 #lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/HRx2.lmdb"
 #lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2HR_forLMDB/HRx2.lmdb"
-lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj//valData/DIV2K_valid_x2ds/HRx2.lmdb"
+lmdb_save_path = "/content/drive/MyDrive/tapmobileTestProj//valData/DIV2K_valid_x2ds/LRblurx2.lmdb"
 
 meta_info = {"name": "DIV2K_valid_x2ds"}
 
