@@ -19,8 +19,11 @@ def generate_mod_LR_bic():
     #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/source"
     #savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal"
     
-    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/source"
-    savedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid"
+    #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/source"
+    #savedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid"
+    
+    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid_x2ds/source"
+    savedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid_x2ds"
     
     # load PCA matrix of enough kernel
     print("load PCA matrix")
