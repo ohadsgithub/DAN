@@ -41,11 +41,11 @@ datasets:
 network_G:
   which_model_G: DAN
   setting:
-    nf: 64
-    nb: 10
-    ng: 5
+    nf: 16
+    nb: 5
+    ng: 2
     input_para: 10
-    loop: 4
+    loop: 3
     kernel_size: 21
 
 #### path
