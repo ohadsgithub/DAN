@@ -252,9 +252,25 @@ class B_Model(BaseModel):
         self.save_network(self.netG, "G", iter_label)
         
         
-    #def makeONNX(self):
-    #    #copy1=nn.DataParallel(self.netG)
-    #    self.netG.eval() # maybe its already at eval?
+    def makeONNX(self):
+        #copy1=nn.DataParallel(self.netG)
+        self.netG.eval() # maybe its already at eval?
+        
+        randomInput = torch.randn( 1, 3, 255, 255, requires_grad=True)
+        torch_out = self.netG(randomInput)
+
+        # Export the model
+        #self.netG.module or just self.netG ?
+        torch.onnx.export(self.netG.module,        # model being run
+                  randomInput,                     # model input (or a tuple for multiple inputs)
+                  "DANv2_with_mobilenetV2.onnx",   # where to save the model (can be a file or file-like object)
+                  export_params=True,              # store the trained parameter weights inside the model file
+                  opset_version=10,                # the ONNX version to export the model to
+                  do_constant_folding=True,        # whether to execute constant folding for optimization
+                  input_names = ['input'],         # the model's input names
+                  output_names = ['output'],       # the model's output names
+                  dynamic_axes={'input' : {0 : 'batch_size'},    # variable length axes
+                                'output' : {0 : 'batch_size'}})
         
     #    x = torch.randn(batch_size, 1, 224, 224, requires_grad=True)
     #    torch_out = torch_model(x)
