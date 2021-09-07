@@ -60,9 +60,9 @@ train:
   lr_scheme: MultiStepLR
   beta1: 0.9
   beta2: 0.99
-  niter: 32
+  niter: 16
   warmup_iter: -1  # no warm up
-  lr_steps: [8, 16, 24]
+  lr_steps: [4, 8, 12]
   lr_gamma: 0.5
   eta_min: !!float 1e-7
 
