@@ -1,5 +1,5 @@
 #### general settings
-name: DANx2_setting1_google_x2ds
+name: DANx2_setting1_google_x4ds
 use_tb_logger: true
 model: blind
 distortion: sr
