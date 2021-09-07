@@ -256,8 +256,10 @@ class B_Model(BaseModel):
         #copy1=nn.DataParallel(self.netG)
         self.netG.eval() # maybe its already at eval?
         
-        randomInput = torch.randn( 1, 3, 255, 255, requires_grad=True)
-        torch_out = self.netG(randomInput)
+        #randomInput = torch.randn( 1, 3, 255, 255, requires_grad=True)
+        randomInput = torch.randn( 1, 3, 255, 255)
+        
+        #torch_out = self.netG(randomInput) # is this even needed?
 
         # Export the model
         #self.netG.module or just self.netG ?
