@@ -281,8 +281,8 @@ def main():
                         #sampleInput=LR_img
                         #print(list(sampleInput.size()))
                         #print(gfdfhejhj)
-                    sampleInput=LR_img
-                    print(list(sampleInput.size()))
+                    #sampleInput=LR_img
+                    #print(list(sampleInput.size()))
                     
                     
 
@@ -361,6 +361,7 @@ def main():
     #model=nn.DataParallel(model)
     
     #model.makeONNX(sampleInput)
+    model.makeONNX()
     #print(list(sampleInput.size()))
 
 
