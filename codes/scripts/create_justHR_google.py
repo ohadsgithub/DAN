@@ -16,10 +16,13 @@ def create_justHR_google():
     up_scale = 2
     mod_scale = 2
     # set data dir
-    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2ds/source"
-    savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2HR_forLMDB" #/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2HR_forLMDB
+    #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2ds/source"
+    #savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2HR_forLMDB" #/content/drive/MyDrive/tapmobileTestProj/trainData/data_resized/x2HR_forLMDB
     #sourcedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/united_noVal/source"
     #savedir = "/content/drive/MyDrive/tapmobileTestProj/trainData/justHRforLMDB"
+    
+    sourcedir = "/content/drive/MyDrive/tapmobileTestProj/valData/DIV2K_valid/LR/x2"
+    savedir = "/content/drive/MyDrive/tapmobileTestProj/valData"
 
     saveHRpath = os.path.join(savedir, "HR", "x" + str(mod_scale))
     
