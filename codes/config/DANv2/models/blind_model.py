@@ -257,7 +257,8 @@ class B_Model(BaseModel):
         self.netG.eval() # maybe its already at eval?
         
         #randomInput = torch.randn( 1, 3, 255, 255, requires_grad=True)
-        randomInput = torch.randn( 1, 3, 255, 255)
+        #randomInput = torch.randn( 1, 3, 255, 255)
+        randomInput = torch.randn( 1, 3, 255, 255).to(self.device)
         
         #torch_out = self.netG(randomInput) # is this even needed?
 
