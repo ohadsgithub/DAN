@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "image_classifier.h"
+#include "hyper_resolutor.h"
 #include "macro.h"
 #include "utils/utils.h"
 
