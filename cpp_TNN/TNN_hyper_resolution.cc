@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
         data_padded[k]=0;        
     }
     
-    int x=0;
+    int x=0; //must be ordered in one of two ways? what about data type?
     for (int y = 0; y < image_height; ++y) {
         for (x = 0; x < image_width; ++x) {
             data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
