@@ -2,6 +2,11 @@
 #include <string>
 #include <vector>
 
+
+#include <cmath>//////////////////////
+#include <iostream>/////////////
+
+
 #include "hyper_resolutor.h"
 #include "macro.h"
 #include "utils/utils.h"
@@ -23,7 +28,7 @@ using namespace TNN_NS;
 int main(int argc, char** argv) {
     if (!ParseAndCheckCommandLine(argc, argv)) {
         ShowUsage(argv[0]);
-        printf("\t-l, <label>    \t%s\n", label_path_message);
+        //printf("\t-l, <label>    \t%s\n", label_path_message);
         return -1;
     }
 
@@ -45,7 +50,7 @@ int main(int argc, char** argv) {
     }
 
     
-    auto predictor = std::make_shared<ImageClassifier>();
+    auto predictor = std::make_shared<HyperResolutor>(); // ??
     
 
     char img_buff[256];
@@ -60,12 +65,50 @@ int main(int argc, char** argv) {
     }
 
     std::vector<int> nchw = {1, image_channel, image_height, image_width};
+    
+    
+    //padding
+    residue_width=image_width%255;
+    residue_height=image_height%255;
+    
+    w_blocks=ceil(image_height/255);
+    h_blocks=ceil(image_width/255);
+    
+    padded_height=h_blocks*255;
+    padded_width=w_blocks*255;
+    
+    uint8_t *data_padded = new uint8_t[padded_height*padded_weight*3];
+    for (int k = 0; k < image_width * image_height; ++k) {
+        data_padded[k]=0;        
+    }
+    
+    int x=0;
+    for (int y = 0; y < image_height; ++y) {
+        for (x = 0; x < image_width; ++x) {
+            data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
+            data_padded[3*(x+y*padded_width)+1]   = data[3*(x+y*image_width)+1];
+            data_padded[3*(x+y*padded_width)+2]   = data[3*(x+y*image_width)+2];
+        }
+    }
+    
+    std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
 
     //Init
     std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput();
     CHECK_TNN_STATUS(predictor->Init(option));
     //Predict
-    auto image_mat = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw, data);
+    auto image_mat = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw2, data_padded);
+    //auto image_mat = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw, data);
+    
+    int i=0;
+    for (int j = 0; j < h_blocks; ++j) {
+        for (i = 0; i < w_blocks; ++i) {
+            data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
+            data_padded[3*(x+y*padded_width)+1]   = data[3*(x+y*image_width)+1];
+            data_padded[3*(x+y*padded_width)+2]   = data[3*(x+y*image_width)+2];
+        }
+    }
+    
     CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
 
     int class_id = -1;
@@ -76,10 +119,21 @@ int main(int argc, char** argv) {
     //完成计算，获取任意输出点
     
     
-    char img_buff[256];
-    char *input_imgfn = img_buff;
+    //char img_buff[256];
+    //char *input_imgfn = img_buff;
     //stbi_write_png(char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes);
-    stbi_write_png(*output_filename, image_width*2, image_height*2, 3, *output_data, int stride_in_bytes);
+   
+    //int success = stbi_write_bmp(buff, image_orig_width, image_orig_height, 4, ifm_buf); //from TNNFaceDetector
+    
+    //stbi_write_png(*output_filename, image_width*2, image_height*2, 3, *output_data, int stride_in_bytes);
+    
+    
+    char buff[256];  //  instead of "predictions", give it a name based on the input?
+    sprintf(buff, "%s.png", "predictions"); //from TNNObjectDetector
+    int success = stbi_write_bmp(buff, image_width*2, image_height*2, 3, output_data);
+    if(!success) 
+        return -1;
+    delete [] ifm_buf;
     
     fprintf(stdout, "Hyper resolution done. Result: %sOutput argmax: %d\n", labels[class_id], class_id+1);
     fprintf(stdout, "%s\n", predictor->GetBenchResult().Description().c_str());
