@@ -1,5 +1,5 @@
-#ifndef TNN_EXAMPLES_BASE_IMAGE_CLASSIFIER_H_
-#define TNN_EXAMPLES_BASE_IMAGE_CLASSIFIER_H_
+#ifndef TNN_EXAMPLES_BASE_HYPER_RESOLUTOR_H_
+#define TNN_EXAMPLES_BASE_HYPER_RESOLUTOR_H_
 
 #include <algorithm>
 #include <iostream>
@@ -13,14 +13,14 @@ namespace TNN_NS {
 class ImageClassifierOutput : public TNNSDKOutput {
 public:
     ImageClassifierOutput(std::shared_ptr<Mat> mat = nullptr) : TNNSDKOutput(mat) {};
-    virtual ~ImageClassifierOutput();
+    virtual ~HyperResolutorrOutput();
     
     int class_id = -1;
 };
 
-class ImageClassifier : public TNN_NS::TNNSDKSample {
+class HyperResolutor : public TNN_NS::TNNSDKSample {
 public:
-    virtual ~ImageClassifier();
+    virtual ~HyperResolutor();
     virtual MatConvertParam GetConvertParamForInput(std::string tag = "");
     virtual std::shared_ptr<TNNSDKOutput> CreateSDKOutput();
     virtual Status ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output);
