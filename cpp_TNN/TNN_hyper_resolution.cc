@@ -44,21 +44,9 @@ int main(int argc, char** argv) {
         #endif
     }
 
+    
     auto predictor = std::make_shared<ImageClassifier>();
-
-    char* temp_p;
-    char line[256];
-    FILE *fp_label;
-    if((fp_label = fopen(FLAGS_l.c_str(), "r")) == NULL) {
-        fprintf(stderr, "ImageClassifier open lable file %s failed.\n", FLAGS_l.c_str());
-        return -1;
-    }
-    static unsigned char labels[1000][256];
-    for(int i = 0; i < 1000; i++){
-        temp_p = fgets(line, 256 ,fp_label);
-        memcpy(labels[i], line, 256);
-    }
-    fclose(fp_label);
+    
 
     char img_buff[256];
     char *input_imgfn = img_buff;
