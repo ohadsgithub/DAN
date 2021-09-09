@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     char img_buff[256];
     char *input_imgfn = img_buff;
     strncpy(input_imgfn, FLAGS_i.c_str(), 256);
-    printf("Classify is about to start, and the picture is %s\n",input_imgfn);
+    printf("Hyper resolution x2 is about to start, and the picture is %s\n",input_imgfn);
 
     int image_width, image_height, image_channel;
     unsigned char *data = stbi_load(input_imgfn, &image_width, &image_height, &image_channel, 3);
@@ -174,15 +174,16 @@ int main(int argc, char** argv) {
     //stbi_write_png(*output_filename, image_width*2, image_height*2, 3, *output_data, int stride_in_bytes);
     
     
+    //input_imgfn
     char buff[256];  //  instead of "predictions", give it a name based on the input?
     sprintf(buff, "%s.png", "predictions"); //from TNNObjectDetector
     int success = stbi_write_bmp(buff, image_width*2, image_height*2, 3, output_data);
     if(!success) 
         return -1;
-    delete [] ifm_buf;
+    //delete [] ifm_buf;
     
-    fprintf(stdout, "Hyper resolution done. Result: %sOutput argmax: %d\n", labels[class_id], class_id+1);
-    fprintf(stdout, "%s\n", predictor->GetBenchResult().Description().c_str());
+    //fprintf(stdout, "Hyper resolution done. Result: %sOutput argmax: %d\n", labels[class_id], class_id+1);
+    //fprintf(stdout, "%s\n", predictor->GetBenchResult().Description().c_str());
     
     free(data);
     free(output_data);
