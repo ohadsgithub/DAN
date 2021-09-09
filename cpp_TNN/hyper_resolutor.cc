@@ -1,14 +1,14 @@
-#include "image_classifier.h"
+#include "hyper_resolutor.h"
 #include "sample_timer.h"
 #include <cmath>
 
 namespace TNN_NS {
 
-ImageClassifierOutput::~ImageClassifierOutput() {}
+HyperResolutorOutput::~HyperResolutorOutput() {}
 
-ImageClassifier::~ImageClassifier() {}
+HyperResolutor::~HyperResolutor() {}
 
-std::shared_ptr<Mat> ImageClassifier::ProcessSDKInputMat(std::shared_ptr<Mat> input_mat,
+std::shared_ptr<Mat> HyperResolutor::ProcessSDKInputMat(std::shared_ptr<Mat> input_mat,
                                                                    std::string name) {
     auto target_dims = GetInputShape(name);
     auto input_height = input_mat->GetHeight();
@@ -30,7 +30,7 @@ std::shared_ptr<Mat> ImageClassifier::ProcessSDKInputMat(std::shared_ptr<Mat> in
 }
 
 
-MatConvertParam ImageClassifier::GetConvertParamForInput(std::string tag) {
+MatConvertParam HyperResolutor::GetConvertParamForInput(std::string tag) {
     MatConvertParam input_cvt_param;
     input_cvt_param.scale = {1.0 / (255 * 0.229), 1.0 / (255 * 0.224), 1.0 / (255 * 0.225), 0.0};
     input_cvt_param.bias  = {-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225, 0.0};
@@ -41,7 +41,7 @@ std::shared_ptr<TNNSDKOutput> ImageClassifier::CreateSDKOutput() {
     return std::make_shared<ImageClassifierOutput>();
 }
 
-Status ImageClassifier::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
+Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     Status status = TNN_OK;
     auto output = dynamic_cast<ImageClassifierOutput *>(output_.get());
     RETURN_VALUE_ON_NEQ(!output, false,
