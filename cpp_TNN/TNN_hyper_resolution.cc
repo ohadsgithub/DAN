@@ -82,8 +82,9 @@ int main(int argc, char** argv) {
         data_padded[k]=0;        
     }
     
+    int y=0;
     int x=0; //must be ordered in one of two ways? what about data type?
-    for (int y = 0; y < image_height; ++y) {
+    for (y = 0; y < image_height; ++y) {
         for (x = 0; x < image_width; ++x) {
             data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
             data_padded[3*(x+y*padded_width)+1]   = data[3*(x+y*image_width)+1];
@@ -101,8 +102,10 @@ int main(int argc, char** argv) {
     std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput(); // inside for loop or ouside for loop?
     CHECK_TNN_STATUS(predictor->Init(option));
     //Predict
+    /*
     auto image_mat_padded = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw2, data_padded);
     //auto image_mat = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw, data);
+    
     
     uint8_t *blank = new uint8_t[255*255*3];
     for (int t = 0; t < 255 * 255 * 3; ++t) {
@@ -110,27 +113,55 @@ int main(int argc, char** argv) {
     }
     
     auto patchOf255 = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, blank);
+    */
     
+    uint8_t *patch_input_data = new uint8_t[255*255*3];
+    uint8_t *patch_output_data = new uint8_t[510*510*3];
+    
+    int x2=0;
+    int y2=0;
     int i=0;
     for (int j = 0; j < h_blocks; ++j) {
         for (i = 0; i < w_blocks; ++i) {
             
             //Status MatUtils::Crop(Mat& src, Mat& dst, CropParam param, void* command_queue)
+            for (y = 0; y < 255; ++y) {
+                for (x = 0; x < 255; ++x) {
+                    x2=x+i*255;
+                    y2=y+j*255;
+                    patch_input_data[3*(x+y*255)]   = data_padded[3*(x2+y2*padded_width)];
+                    patch_input_data[3*(x+y*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
+                    patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
+                }
+            }
+            //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
+            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_data)), sdk_output));
             
-            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
-            data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
-            data_padded[3*(x+y*padded_width)+1]   = data[3*(x+y*image_width)+1];
-            data_padded[3*(x+y*padded_width)+2]   = data[3*(x+y*image_width)+2];
+            //dynamic_cast<HairSegmentationOutput *>(sdk_output.get())
+            //(uint8_t*)(merged_image.data.get())
+            patch_output_data=(uint8_t*)(sdk_output.data.get());
+            
+            for (y = 0; y < 510; ++y) {
+                for (x = 0; x < 510; ++x) {
+                    x2=x+i*510;
+                    y2=y+j*510;
+                    if ((x2<image_width) && (y2<image_height))
+                    output_data[3*(x2+y2*510)]   = patch_output_data[3*(x+y*padded_width)];
+                    output_data[3*(x2+y2*510)+1]   = patch_output_data[3*(x+y*padded_width)+1];
+                    output_data[3*(x2+y2*510)+2]   = patch_output_data[3*(x+y*padded_width)+2];
+                }
+            }
+            
         }
     }
     
-    CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
+    //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
 
-    int class_id = -1;
-    if (sdk_output && dynamic_cast<ImageClassifierOutput *>(sdk_output.get())) {
-        auto classfy_output = dynamic_cast<ImageClassifierOutput *>(sdk_output.get());
-        class_id = classfy_output->class_id;
-    }
+    //int class_id = -1;
+    //if (sdk_output && dynamic_cast<ImageClassifierOutput *>(sdk_output.get())) {
+    //    auto classfy_output = dynamic_cast<ImageClassifierOutput *>(sdk_output.get());
+    //    class_id = classfy_output->class_id;
+    //}
     //完成计算，获取任意输出点
     
     
@@ -155,5 +186,7 @@ int main(int argc, char** argv) {
     
     free(data);
     free(output_data);
+    free(data_padded);
+    
     return 0;
 }
