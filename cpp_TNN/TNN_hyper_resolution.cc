@@ -174,9 +174,12 @@ int main(int argc, char** argv) {
     //stbi_write_png(*output_filename, image_width*2, image_height*2, 3, *output_data, int stride_in_bytes);
     
     
+    //char img_buff[256];
+    //char *input_imgfn = img_buff;
+    //strncpy(input_imgfn, FLAGS_i.c_str(), 256);
     //input_imgfn
     char buff[256];  //  instead of "predictions", give it a name based on the input?
-    sprintf(buff, "%s.png", "predictions"); //from TNNObjectDetector
+    sprintf(buff, "%s.png", "super_resolution"); //from TNNObjectDetector
     int success = stbi_write_bmp(buff, image_width*2, image_height*2, 3, output_data);
     if(!success) 
         return -1;
