@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     padded_width=w_blocks*255;
     
     uint8_t *data_padded = new uint8_t[padded_height*padded_weight*3];
-    for (int k = 0; k < image_width * image_height; ++k) {
+    for (int k = 0; k < image_width * image_height * 3; ++k) {
         data_padded[k]=0;        
     }
     
@@ -92,17 +92,32 @@ int main(int argc, char** argv) {
     }
     
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
+    std::vector<int> nchw255 = {1, image_channel, 255, 255};
+    
+    uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
 
+    
     //Init
-    std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput();
+    std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput(); // inside for loop or ouside for loop?
     CHECK_TNN_STATUS(predictor->Init(option));
     //Predict
-    auto image_mat = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw2, data_padded);
+    auto image_mat_padded = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw2, data_padded);
     //auto image_mat = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw, data);
+    
+    uint8_t *blank = new uint8_t[255*255*3];
+    for (int t = 0; t < 255 * 255 * 3; ++t) {
+        blank[k]=0;        
+    }
+    
+    auto patchOf255 = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, blank);
     
     int i=0;
     for (int j = 0; j < h_blocks; ++j) {
         for (i = 0; i < w_blocks; ++i) {
+            
+            //Status MatUtils::Crop(Mat& src, Mat& dst, CropParam param, void* command_queue)
+            
+            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
             data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
             data_padded[3*(x+y*padded_width)+1]   = data[3*(x+y*image_width)+1];
             data_padded[3*(x+y*padded_width)+2]   = data[3*(x+y*image_width)+2];
