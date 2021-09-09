@@ -17,8 +17,8 @@
 
 using namespace TNN_NS;
 
-static const char label_path_message[] = "(optional) label file path. Default is: ../../../assets/synset.txt";
-DEFINE_string(l, "../../../assets/synset.txt", label_path_message);
+//static const char label_path_message[] = "(optional) label file path. Default is: ../../../assets/synset.txt";
+//DEFINE_string(l, "../../../assets/synset.txt", label_path_message);
 
 int main(int argc, char** argv) {
     if (!ParseAndCheckCommandLine(argc, argv)) {
