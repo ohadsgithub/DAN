@@ -140,6 +140,7 @@ int main(int argc, char** argv) {
             //dynamic_cast<HairSegmentationOutput *>(sdk_output.get())
             //(uint8_t*)(merged_image.data.get())
             patch_output_data=(uint8_t*)(sdk_output.data.get());
+            //float *scores_data = (float *)output_mat_scores.get()->GetData();
             
             for (y = 0; y < 510; ++y) {
                 for (x = 0; x < 510; ++x) {
