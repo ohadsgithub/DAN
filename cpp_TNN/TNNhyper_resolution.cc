@@ -98,13 +98,14 @@ int main(int argc, char** argv) {
     std::vector<int> nchw255 = {1, image_channel, 255, 255};
     
     
-    
+   
     uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
 
-    
+    printf("reached line 104\n");
     
     //Init
     std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput(); // inside for loop or ouside for loop?
+    printf("reached line 108\n");
     CHECK_TNN_STATUS(predictor->Init(option));
     //Predict
     /*
@@ -119,7 +120,6 @@ int main(int argc, char** argv) {
     
     auto patchOf255 = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, blank);
     */
-    
     printf("reached line 123\n");
     
     uint8_t *patch_input_data = new uint8_t[255*255*3];
