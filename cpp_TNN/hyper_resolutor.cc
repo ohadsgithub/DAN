@@ -41,8 +41,8 @@ MatConvertParam HyperResolutor::GetConvertParamForInput(std::string tag) {
     return input_cvt_param;
 }
 
-std::shared_ptr<TNNSDKOutput> ImageClassifier::CreateSDKOutput() {
-    return std::make_shared<ImageClassifierOutput>();
+std::shared_ptr<TNNSDKOutput> HyperResolutor::CreateSDKOutput() {
+    return std::make_shared<HyperResolutorOutput>();
 }
 
 Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
