@@ -18,7 +18,7 @@ namespace TNN_NS {
 class HyperResolutorOutput : public TNNSDKOutput {
 public:
     HyperResolutorOutput(std::shared_ptr<Mat> mat = nullptr) : TNNSDKOutput(mat) {};
-    virtual ~HyperResolutorrOutput();
+    virtual ~HyperResolutorOutput(); // was HyperResolutorrOutput
     
     uint8_t *output_data_patch = new uint8_t[510*510*3];
     for (int k = 0; k < 510 * 510 * 3; ++k) {
