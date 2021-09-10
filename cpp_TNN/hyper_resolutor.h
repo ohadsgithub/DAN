@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+
 #include "tnn_sdk_sample.h"
 
 namespace TNN_NS {
@@ -15,8 +16,8 @@ public:
     ImageClassifierOutput(std::shared_ptr<Mat> mat = nullptr) : TNNSDKOutput(mat) {};
     virtual ~HyperResolutorrOutput();
     
-    int class_id = -1;
 };
+    
 
 class HyperResolutor : public TNN_NS::TNNSDKSample {
 public:
@@ -26,6 +27,13 @@ public:
     virtual Status ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output);
     virtual std::shared_ptr<TNN_NS::Mat> ProcessSDKInputMat(std::shared_ptr<TNN_NS::Mat> mat,
                                                               std::string name);
+    
+    
+    //virtual Status Init(std::shared_ptr<TNNSDKOption> option);
+
+    
+    //virtual std::shared_ptr<Mat> ProcessSDKInputMat(std::shared_ptr<Mat> mat,
+    //                                                        std::string name = kTNNSDKDefaultName);
 
 };
 
