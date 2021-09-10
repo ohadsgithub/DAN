@@ -15,10 +15,15 @@
 
 namespace TNN_NS {
 
-class ImageClassifierOutput : public TNNSDKOutput {
+class HyperResolutorOutput : public TNNSDKOutput {
 public:
-    ImageClassifierOutput(std::shared_ptr<Mat> mat = nullptr) : TNNSDKOutput(mat) {};
+    HyperResolutorOutput(std::shared_ptr<Mat> mat = nullptr) : TNNSDKOutput(mat) {};
     virtual ~HyperResolutorrOutput();
+    
+    uint8_t *output_data_patch = new uint8_t[510*510*3];
+    for (int k = 0; k < 510 * 510 * 3; ++k) {
+        output_data_patch[k]=0;        
+    }
     
 };
     
