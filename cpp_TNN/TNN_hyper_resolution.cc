@@ -95,8 +95,11 @@ int main(int argc, char** argv) {
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
     std::vector<int> nchw255 = {1, image_channel, 255, 255};
     
+    
+    
     uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
 
+    
     
     //Init
     std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput(); // inside for loop or ouside for loop?
@@ -139,8 +142,13 @@ int main(int argc, char** argv) {
             
             //dynamic_cast<HairSegmentationOutput *>(sdk_output.get())
             //(uint8_t*)(merged_image.data.get())
-            patch_output_data=(uint8_t*)(sdk_output.data.get()); ///////////////////////////////////////////change?
+            //patch_output_data=(uint8_t*)(sdk_output.data.get()); ///////////////////////////////////////////change?
             //float *scores_data = (float *)output_mat_scores.get()->GetData();
+            if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
+                auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
+                patch_output_data = SR_output->output_data_patch;
+            }
+            
             
             for (y = 0; y < 510; ++y) {
                 for (x = 0; x < 510; ++x) {
