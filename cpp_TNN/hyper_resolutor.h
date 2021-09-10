@@ -5,9 +5,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
+#include <array>
 
 
 #include "tnn_sdk_sample.h"
+#include "tnn/utils/mat_utils.h"
+#include "tnn/utils/dims_vector_utils.h"
 
 namespace TNN_NS {
 
