@@ -92,6 +92,8 @@ int main(int argc, char** argv) {
         }
     }
     
+    printf("reached line 95\n");
+    
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
     std::vector<int> nchw255 = {1, image_channel, 255, 255};
     
@@ -118,6 +120,8 @@ int main(int argc, char** argv) {
     auto patchOf255 = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, blank);
     */
     
+    printf("reached line 123\n");
+    
     uint8_t *patch_input_data = new uint8_t[255*255*3];
     uint8_t *patch_output_data = new uint8_t[510*510*3];
     
@@ -137,8 +141,13 @@ int main(int argc, char** argv) {
                     patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
                 }
             }
+            
+            printf("reached line 145\n");
+            
             //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
             CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_data)), sdk_output));
+            
+            printf("reached line 150\n");
             
             //dynamic_cast<HairSegmentationOutput *>(sdk_output.get())
             //(uint8_t*)(merged_image.data.get())
@@ -148,6 +157,9 @@ int main(int argc, char** argv) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
                 patch_output_data = SR_output->output_data_patch;
             }
+            
+            
+            printf("reached line 162\n");
             
             
             for (y = 0; y < 510; ++y) {
@@ -160,6 +172,8 @@ int main(int argc, char** argv) {
                     output_data[3*(x2+y2*510)+2]   = patch_output_data[3*(x+y*padded_width)+2];
                 }
             }
+            
+            printf("reached line 176\n");
             
         }
     }
