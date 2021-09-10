@@ -26,13 +26,17 @@ std::shared_ptr<Mat> HyperResolutor::ProcessSDKInputMat(std::shared_ptr<Mat> inp
             return nullptr;
         }
     }
+  
+  
+  //return TNNSDKSample::ResizeToInputShape(input_mat, name); /// ??
+  
     return input_mat;
 }
 
 
 MatConvertParam HyperResolutor::GetConvertParamForInput(std::string tag) {
     MatConvertParam input_cvt_param;
-    input_cvt_param.scale = {1.0 / (255 * 0.229), 1.0 / (255 * 0.224), 1.0 / (255 * 0.225), 0.0};
+    input_cvt_param.scale = {1.0 / (255 * 0.229), 1.0 / (255 * 0.224), 1.0 / (255 * 0.225), 0.0}; ///////  ??
     input_cvt_param.bias  = {-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225, 0.0};
     return input_cvt_param;
 }
@@ -43,9 +47,15 @@ std::shared_ptr<TNNSDKOutput> ImageClassifier::CreateSDKOutput() {
 
 Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     Status status = TNN_OK;
-    auto output = dynamic_cast<ImageClassifierOutput *>(output_.get());
+  
+    //auto option = dynamic_cast<HyperResolutorOption *>(option_.get());
+    //RETURN_VALUE_ON_NEQ(!option, false,
+    //                    Status(TNNERR_PARAM_ERR, "TNNSDKOption is invalid"));
+  
+    auto output = dynamic_cast<HyperResolutorOutput *>(output_.get());
     RETURN_VALUE_ON_NEQ(!output, false,
                         Status(TNNERR_PARAM_ERR, "TNNSDKOutput is invalid"));
+  
     
     auto output_mat_scores = output->GetMat();
     RETURN_VALUE_ON_NEQ(!output_mat_scores, false,
@@ -53,14 +63,15 @@ Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     
     int class_id           = 0;
     float *scores_data = (float *)output_mat_scores.get()->GetData();
-    float max_v        = scores_data[0];
-    for (int i = 1; i < output_mat_scores->GetChannel(); ++i) {
-        if (max_v < scores_data[i]) {
-            max_v    = scores_data[i];
-            class_id = i;
-        }
-    }
-    output->class_id = class_id;
+  
+    //float max_v        = scores_data[0];
+    //for (int i = 1; i < output_mat_scores->GetChannel(); ++i) {
+    //    if (max_v < scores_data[i]) {
+    //        max_v    = scores_data[i];
+    //        class_id = i;
+    //    }
+    //}
+    //output->class_id = class_id;
     return status;
 }
 
