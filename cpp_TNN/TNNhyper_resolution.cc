@@ -78,8 +78,8 @@ int main(int argc, char** argv) {
     int padded_width=w_blocks*255;
     
     uint8_t *data_padded = new uint8_t[padded_height*padded_weight*3];
-    for (int k = 0; k < image_width * image_height * 3; ++k) {
-        data_padded[k]=0;        
+    for (int indxk = 0; indxk < image_width * image_height * 3; ++indxk) {
+        data_padded[indxk]=0;        
     }
     
     int y=0;
