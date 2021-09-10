@@ -72,6 +72,9 @@ Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     //    }
     //}
     //output->class_id = class_id;
+  
+    output->output_data_patch = output_data_patch;
+  
     return status;
 }
 
