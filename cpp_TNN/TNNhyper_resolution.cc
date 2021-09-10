@@ -190,8 +190,10 @@ int main(int argc, char** argv) {
     char buff[256];  //  instead of "predictions", give it a name based on the input?
     sprintf(buff, "%s.png", "super_resolution"); //from TNNObjectDetector
     int success = stbi_write_bmp(buff, image_width*2, image_height*2, 3, output_data);
-    if(!success) 
+    if(!success) {
+        printf("something went wrong with saving the image\n");
         return -1;
+    }
     //delete [] ifm_buf;
     
     //fprintf(stdout, "Hyper resolution done. Result: %sOutput argmax: %d\n", labels[class_id], class_id+1);
