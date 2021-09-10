@@ -68,14 +68,14 @@ int main(int argc, char** argv) {
     
     
     //padding
-    residue_width=image_width%255;
-    residue_height=image_height%255;
+    int residue_width=image_width%255;
+    int residue_height=image_height%255;
     
-    w_blocks=ceil(image_height/255);
-    h_blocks=ceil(image_width/255);
+    int w_blocks=ceil(image_height/255);
+    int h_blocks=ceil(image_width/255);
     
-    padded_height=h_blocks*255;
-    padded_width=w_blocks*255;
+    int padded_height=h_blocks*255;
+    int padded_width=w_blocks*255;
     
     uint8_t *data_padded = new uint8_t[padded_height*padded_weight*3];
     for (int k = 0; k < image_width * image_height * 3; ++k) {
