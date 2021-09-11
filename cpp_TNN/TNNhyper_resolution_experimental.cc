@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
             //float *scores_data = (float *)output_mat_scores.get()->GetData();
             if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
-                patch_output_data = SR_output->output_data_patch;
+                //patch_output_data = SR_output->output_data_patch;
             }
             
             
@@ -167,9 +167,9 @@ int main(int argc, char** argv) {
                     x2=x+i*510;
                     y2=y+j*510;
                     if ((x2<image_width) && (y2<image_height))
-                    output_data[3*(x2+y2*510)]   = patch_output_data[3*(x+y*padded_width)];
-                    output_data[3*(x2+y2*510)+1]   = patch_output_data[3*(x+y*padded_width)+1];
-                    output_data[3*(x2+y2*510)+2]   = patch_output_data[3*(x+y*padded_width)+2];
+                    output_data[3*(x2+y2*510)]   = 0; //patch_output_data[3*(x+y*padded_width)];
+                    output_data[3*(x2+y2*510)+1]   = 0; //patch_output_data[3*(x+y*padded_width)+1];
+                    output_data[3*(x2+y2*510)+2]   = 0; //patch_output_data[3*(x+y*padded_width)+2];
                 }
             }
             
