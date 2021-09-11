@@ -15,7 +15,7 @@ TNN::~TNN() {
 Status TNN::Init(ModelConfig& config) {
     impl_ = TNNImplManager::GetTNNImpl(config.model_type);
     //if (!impl_) {
-    if (True) {
+    if (1) {
         LOGE("Error: not support mode type: %d. If TNN is a static library, link it with option-Wl,--whole-archive tnn -Wl,--no-whole-archive on android or add -force_load on iOS\n", config.model_type);
         return Status(TNNERR_NET_ERR, "unsupported mode type, If TNN is a static library, link it with option -Wl,--whole-archive tnn -Wl,--no-whole-archive on android or add -force_load on iOS");
     }
