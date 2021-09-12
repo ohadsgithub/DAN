@@ -2,10 +2,8 @@
 #include <string>
 #include <vector>
 
-
-#include <cmath>//////////////////////
-#include <iostream>/////////////
-
+#include <cmath>
+#include <iostream>
 
 #include "hyper_resolutor.h"
 #include "macro.h"
@@ -92,16 +90,11 @@ int main(int argc, char** argv) {
         }
     }
     
-    printf("reached line 95\n");
     
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
     std::vector<int> nchw255 = {1, image_channel, 255, 255};
-    
-    
    
     uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
-
-    printf("reached line 104\n");
     
     //Init
     std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput(); // inside for loop or ouside for loop?
@@ -120,7 +113,6 @@ int main(int argc, char** argv) {
     
     auto patchOf255 = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, blank);
     */
-    printf("reached line 123\n");
     
     uint8_t *patch_input_data = new uint8_t[255*255*3];
     uint8_t *patch_output_data = new uint8_t[510*510*3];
@@ -149,10 +141,6 @@ int main(int argc, char** argv) {
             
             printf("reached line 150\n");
             
-            //dynamic_cast<HairSegmentationOutput *>(sdk_output.get())
-            //(uint8_t*)(merged_image.data.get())
-            //patch_output_data=(uint8_t*)(sdk_output.data.get()); ///////////////////////////////////////////change?
-            //float *scores_data = (float *)output_mat_scores.get()->GetData();
             if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
                 patch_output_data = SR_output->output_data_patch;
@@ -173,45 +161,17 @@ int main(int argc, char** argv) {
                 }
             }
             
-            printf("reached line 176\n");
-            
         }
     }
     
-    //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
 
-    //int class_id = -1;
-    //if (sdk_output && dynamic_cast<ImageClassifierOutput *>(sdk_output.get())) {
-    //    auto classfy_output = dynamic_cast<ImageClassifierOutput *>(sdk_output.get());
-    //    class_id = classfy_output->class_id;
-    //}
-    //完成计算，获取任意输出点
-    
-    
-    //char img_buff[256];
-    //char *input_imgfn = img_buff;
-    //stbi_write_png(char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes);
-   
-    //int success = stbi_write_bmp(buff, image_orig_width, image_orig_height, 4, ifm_buf); //from TNNFaceDetector
-    
-    //stbi_write_png(*output_filename, image_width*2, image_height*2, 3, *output_data, int stride_in_bytes);
-    
-    
-    //char img_buff[256];
-    //char *input_imgfn = img_buff;
-    //strncpy(input_imgfn, FLAGS_i.c_str(), 256);
-    //input_imgfn
-    char buff[256];  //  instead of "predictions", give it a name based on the input?
+    char buff[256];
     sprintf(buff, "%s.png", "super_resolution"); //from TNNObjectDetector
     int success = stbi_write_bmp(buff, image_width*2, image_height*2, 3, output_data);
     if(!success) {
         printf("something went wrong with saving the image\n");
         return -1;
     }
-    //delete [] ifm_buf;
-    
-    //fprintf(stdout, "Hyper resolution done. Result: %sOutput argmax: %d\n", labels[class_id], class_id+1);
-    //fprintf(stdout, "%s\n", predictor->GetBenchResult().Description().c_str());
     
     free(data);
     free(output_data);
