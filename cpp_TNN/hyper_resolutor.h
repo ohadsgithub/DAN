@@ -23,10 +23,6 @@ public:
     uint8_t *output_data_patch = new uint8_t[510*510*3];
     //uint8_t *output_data_patch;
     
-    //for (int k = 0; k < 510 * 510 * 3; ++k) {              cant initialize it here? do so elsewhere or not needed?
-    //    output_data_patch[k]=0;        
-    //}
-    
 };
     
 
@@ -39,15 +35,9 @@ public:
     virtual std::shared_ptr<TNN_NS::Mat> ProcessSDKInputMat(std::shared_ptr<TNN_NS::Mat> mat,
                                                               std::string name);
     
-    
-    //virtual Status Init(std::shared_ptr<TNNSDKOption> option);
-
-    
-    //virtual std::shared_ptr<Mat> ProcessSDKInputMat(std::shared_ptr<Mat> mat,
-    //                                                        std::string name = kTNNSDKDefaultName);
-
+ 
 };
 
 }
 
-#endif // TNN_EXAMPLES_BASE_IMAGE_CLASSIFIER_H_
+#endif // TNN_EXAMPLES_BASE_HYPER_RESOLUTOR_H_
