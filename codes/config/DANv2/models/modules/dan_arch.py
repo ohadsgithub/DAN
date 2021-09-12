@@ -43,7 +43,7 @@ class DPCB_bottleneck(nn.Module):
         return x + self.conv(x)
 
 class DPCB_MNv2_half(nn.Module):
-    def __init__(self, nf, ksize=3, expand_ratio=1., nf_end):
+    def __init__(self, nf, nf_end, ksize=3, expand_ratio=1.):
         super().__init__()
 
         hidden_dim = round(nf * expand_ratio)
@@ -84,7 +84,7 @@ class DPCB_MNv2(nn.Module):
     def __init__(self, nf1, nf2, ksize1=3, ksize2=1, expand_ratio_B=1., expand_ratio_C=1.): 
         super().__init__()
 
-        self.body1 = DPCB_MNv2_half(nf1, ksize1, expand_ratio_B, nf1) 
+        self.body1 = DPCB_MNv2_half(nf1, nf1, ksize1, expand_ratio_B) 
 
         if ksize2 == 1:
             self.body2 = nn.Sequential(
@@ -93,7 +93,7 @@ class DPCB_MNv2(nn.Module):
                 nn.Conv2d(nf1, nf1, ksize2, 1, ksize2 // 2),
             )
         else:
-            self.body2 = DPCB_MNv2_half(nf2, ksize2, expand_ratio_C, nf1)  
+            self.body2 = DPCB_MNv2_half(nf2, nf1, ksize2, expand_ratio_C)  
 
     def forward(self, x):
 
@@ -293,6 +293,8 @@ class DAN(nn.Module):
         kernel_size=21,
         loop=8,
         pca_matrix_path=None,
+        width_mult_R=1.,
+        width_mult_E=1.
     ):
         super(DAN, self).__init__()
 
@@ -300,8 +302,9 @@ class DAN(nn.Module):
         #assert ng #
         #loop #
         #estimator_nb
-        width_mult_R=0.7
-        width_mult_E=0.7
+        
+        #width_mult_R=0.7
+        #width_mult_E=0.7
         expand_ratio_R_B=1.
         expand_ratio_R_C=1. #should always be 1?
         expand_ratio_E_B=1.
