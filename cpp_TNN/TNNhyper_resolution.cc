@@ -20,17 +20,13 @@
 
 using namespace TNN_NS;
 
-//static const char label_path_message[] = "(optional) label file path. Default is: ../../../assets/synset.txt";
-//DEFINE_string(l, "../../../assets/synset.txt", label_path_message);
 
 int main(int argc, char** argv) {
     if (!ParseAndCheckCommandLine(argc, argv)) {
         ShowUsage(argv[0]);
-        //printf("\t-l, <label>    \t%s\n", label_path_message);
         return -1;
     }
 
-    // 创建tnn实例
     auto proto_content = fdLoadFile(FLAGS_p.c_str());
     auto model_content = fdLoadFile(FLAGS_m.c_str());
 
@@ -48,7 +44,7 @@ int main(int argc, char** argv) {
     }
 
     
-    auto predictor = std::make_shared<HyperResolutor>(); // ??
+    auto predictor = std::make_shared<HyperResolutor>();
     
 
     char img_buff[256];
