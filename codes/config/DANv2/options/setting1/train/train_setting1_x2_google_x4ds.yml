@@ -43,10 +43,12 @@ network_G:
   setting:
     nf: 16
     nb: 5
-    ng: 2
+    ng: 3
     input_para: 10
-    loop: 3
+    loop: 4
     kernel_size: 21
+    width_mult_R: 0.7
+    width_mult_E: 0.7
 
 #### path
 path:
