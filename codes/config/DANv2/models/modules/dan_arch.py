@@ -316,12 +316,12 @@ class DAN(nn.Module):
         self.scale = upscale
 
         self.Restorer = Restorer(
-            nf=nf, in_nc=in_nc, nb=nb, ng=ng, scale=self.scale, input_para=input_para, width_mult_R_B=width_mult_R_B,
-            width_mult_R_C=width_mult_R_C, expand_ratio_R_B=expand_ratio_R_B, expand_ratio_R_C=expand_ratio_R_C
+            nf=nf, in_nc=in_nc, nb=nb, ng=ng, scale=self.scale, input_para=input_para, width_mult_R=width_mult_R,
+            expand_ratio_R_B=expand_ratio_R_B, expand_ratio_R_C=expand_ratio_R_C
         )
         self.Estimator = Estimator(
-            kernel_size=kernel_size, para_len=input_para, in_nc=in_nc, scale=self.scale, width_mult_E_B=width_mult_E_B,
-            width_mult_E_C=width_mult_E_C, expand_ratio_E_B=expand_ratio_E_B, expand_ratio_E_C=expand_ratio_E_C
+            kernel_size=kernel_size, para_len=input_para, in_nc=in_nc, scale=self.scale, width_mult_E=width_mult_E,
+            expand_ratio_E_B=expand_ratio_E_B, expand_ratio_E_C=expand_ratio_E_C
         )
 
         self.register_buffer("encoder", torch.load(pca_matrix_path)[None])
