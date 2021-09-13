@@ -129,8 +129,7 @@ int main(int argc, char** argv) {
                     patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
                 }
             }
-            
-            printf("reached line 145\n");
+
             
             //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
             CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_data)), sdk_output));
@@ -141,9 +140,6 @@ int main(int argc, char** argv) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
                 patch_output_data = SR_output->output_data_patch;
             }
-            
-            
-            printf("reached line 162\n");
             
             
             for (y = 0; y < 510; ++y) {
