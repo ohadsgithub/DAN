@@ -7,7 +7,7 @@
 #include <iostream>/////////////
 
 
-#include "hyper_resolutor_experimental.h"
+#include "hyper_resolutor.h"
 #include "macro.h"
 #include "utils/utils.h"
 
