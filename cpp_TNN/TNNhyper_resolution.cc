@@ -165,6 +165,9 @@ int main(int argc, char** argv) {
         printf("something went wrong with saving the image\n");
         return -1;
     }
+    else {
+        printf("image saved\n");
+    }
     
     free(data);
     free(output_data);
