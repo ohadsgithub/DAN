@@ -65,8 +65,14 @@ int main(int argc, char** argv) {
     int residue_width=image_width%255;
     int residue_height=image_height%255;
     
-    int w_blocks=ceil(image_height/255);
-    int h_blocks=ceil(image_width/255);
+    float image_height_float=(float) image_height;
+    float image_width_float=(float) image_width;
+    
+    float h_blocks_float = ceil(image_height_float/255);
+    float w_blocks_float = ceil(image_width_float/255);
+    
+    int h_blocks=(int) h_blocks_float;
+    int w_blocks=(int) w_blocks_float;
     
     int padded_height=h_blocks*255;
     int padded_width=w_blocks*255;
