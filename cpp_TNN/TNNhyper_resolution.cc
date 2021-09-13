@@ -152,9 +152,9 @@ int main(int argc, char** argv) {
                     y2=y+j*510;
                     if ((x2<2*image_width) && (y2<2*image_height))
                     {
-                        output_data[3*(x2+y2)]   = patch_output_data[3*(x+y*510)];
-                        output_data[3*(x2+y2)+1]   = patch_output_data[3*(x+y*510)+1];
-                        output_data[3*(x2+y2)+2]   = patch_output_data[3*(x+y*510)+2];
+                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
+                        output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data[3*(x+y*510)+1];
+                        output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data[3*(x+y*510)+2];
                     }
                 }
             }
