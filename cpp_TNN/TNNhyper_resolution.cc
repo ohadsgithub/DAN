@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
     
     //Init
     std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput(); // inside for loop or ouside for loop?
-    printf("reached line 108\n");
+
     CHECK_TNN_STATUS(predictor->Init(option));
     //Predict
     /*
@@ -134,7 +134,6 @@ int main(int argc, char** argv) {
             //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
             CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_data)), sdk_output));
             
-            printf("reached line 150\n");
             
             if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
