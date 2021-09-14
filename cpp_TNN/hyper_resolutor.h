@@ -21,6 +21,7 @@ public:
     virtual ~HyperResolutorOutput(); // was HyperResolutorrOutput
     
     uint8_t *output_data_patch = new uint8_t[510*510*3];
+    float *output_data_patch_real = new float[510*510*3];//float or double?
     //uint8_t *output_data_patch;
     
 };
