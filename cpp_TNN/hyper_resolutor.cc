@@ -33,8 +33,10 @@ std::shared_ptr<Mat> HyperResolutor::ProcessSDKInputMat(std::shared_ptr<Mat> inp
 
 MatConvertParam HyperResolutor::GetConvertParamForInput(std::string tag) {
     MatConvertParam input_cvt_param;
-    input_cvt_param.scale = {1.0 / (255 * 0.229), 1.0 / (255 * 0.224), 1.0 / (255 * 0.225), 0.0}; 
-    input_cvt_param.bias  = {-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225, 0.0};////////////////////////// 255 instead of 224?
+    //input_cvt_param.scale = {1.0 / (255 * 0.229), 1.0 / (255 * 0.224), 1.0 / (255 * 0.225), 0.0}; 
+    //input_cvt_param.bias  = {-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225, 0.0};////////////////////////// 255 instead of 224?
+    input_cvt_param.scale = {1.0 / 255.0, 1.0 / 255.0, 1.0 / 255.0, 0.0}; 
+    input_cvt_param.bias  = {0.0, 0.0, 0.0, 0.0}; //-1?
     return input_cvt_param;
 }
 
@@ -56,8 +58,8 @@ Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
                         Status(TNNERR_PARAM_ERR, "output_mat_scores is invalid"));
     
     
-    uint8_t *output_data_patch = (uint8_t*)output_mat_patch.get()->GetData(); 
-  
+    //uint8_t *output_data_patch = (uint8_t*)output_mat_patch.get()->GetData(); 
+    uint8_t *output_data_patch = (uint8_t*)(255.0*output_mat_patch.get())->GetData(); 
   
     output->output_data_patch = output_data_patch;
   
