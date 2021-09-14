@@ -77,7 +77,8 @@ int main(int argc, char** argv) {
     int padded_height=h_blocks*255;
     int padded_width=w_blocks*255;
     
-    uint8_t *data_padded = new uint8_t[padded_height*image_width*3];
+    unsigned char *data_padded = new unsigned char[padded_height*image_width*3];
+    //uint8_t *data_padded = new uint8_t[padded_height*image_width*3];
     for (int indxk = 0; indxk < image_width * image_height * 3; ++indxk) {
         data_padded[indxk]=0;        
     }
@@ -116,7 +117,8 @@ int main(int argc, char** argv) {
     auto patchOf255 = std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, blank);
     */
     
-    uint8_t *patch_input_data = new uint8_t[255*255*3];
+    unsigned char *patch_input_data = new unsigned char[255*255*3];
+    //uint8_t *patch_input_data = new uint8_t[255*255*3];
     uint8_t *patch_output_data = new uint8_t[510*510*3];
     
     int x2=0;
