@@ -350,7 +350,7 @@ def main():
     
     
     #start creating ONNX here
-    model.makeONNX()
+    model.makeONNX("DANv2_with_mobilenetV2")
 
 
 if __name__ == "__main__":
