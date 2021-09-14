@@ -252,9 +252,11 @@ class B_Model(BaseModel):
         self.save_network(self.netG, "G", iter_label)
         
         
-    def makeONNX(self):
+    def makeONNX(self, outputfilename):
         
         self.netG.eval()
+        
+        outputfilename_onnx=outputfilename+".onnx"
         
         #randomInput = torch.randn( 1, 3, 255, 255, requires_grad=True)
         #randomInput = torch.randn( 1, 3, 255, 255)
@@ -263,7 +265,7 @@ class B_Model(BaseModel):
         #self.netG.module or just self.netG ?
         torch.onnx.export(self.netG.module,        # model being run
                   randomInput,                     # model input (or a tuple for multiple inputs)
-                  "DANv2_with_mobilenetV2.onnx",   # where to save the model (can be a file or file-like object)
+                  outputfilename_onnx,   # where to save the model (can be a file or file-like object)
                   export_params=True,              # store the trained parameter weights inside the model file
                   opset_version=10,                # the ONNX version to export the model to
                   #do_constant_folding=True,        # whether to execute constant folding for optimization
