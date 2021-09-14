@@ -45,7 +45,7 @@ opt = option.dict_to_nonedict(opt)
 
 model = create_model(opt)
 
-model.makeONNX()
+model.makeONNX("DANv2_from_pretrained")
 
 #if not osp.exists(args.output_dir):
 #    os.makedirs(args.output_dir)
