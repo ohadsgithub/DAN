@@ -34,7 +34,7 @@ std::shared_ptr<Mat> HyperResolutor::ProcessSDKInputMat(std::shared_ptr<Mat> inp
 MatConvertParam HyperResolutor::GetConvertParamForInput(std::string tag) {
     MatConvertParam input_cvt_param;
     input_cvt_param.scale = {1.0 / (255 * 0.229), 1.0 / (255 * 0.224), 1.0 / (255 * 0.225), 0.0}; 
-    input_cvt_param.bias  = {-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225, 0.0};
+    input_cvt_param.bias  = {-0.485 / 0.229, -0.456 / 0.224, -0.406 / 0.225, 0.0};////////////////////////// 255 instead of 224?
     return input_cvt_param;
 }
 
