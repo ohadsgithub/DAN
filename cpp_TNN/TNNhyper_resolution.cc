@@ -62,8 +62,8 @@ int main(int argc, char** argv) {
     
     
     //padding
-    int residue_width=image_width%255;
-    int residue_height=image_height%255;
+    //int residue_width=image_width%255;
+    //int residue_height=image_height%255;
     
     float image_height_float=(float) image_height;
     float image_width_float=(float) image_width;
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
         for (x = 0; x < image_width; ++x) {
             data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
             data_padded[3*(x+y*padded_width)+1]   = data[3*(x+y*image_width)+1];
-            data_padded[3*(x+y*padded_width)+2]   = data[3*(x+y*image_width)+2];
+            data_padded[3*(x+y*padded_width)+2]   = data[3*(x+y*image_width)+2]; //is there a need to divide by 255?
         }
     }
     
