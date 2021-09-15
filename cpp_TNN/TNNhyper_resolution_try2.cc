@@ -97,6 +97,11 @@ int main(int argc, char** argv) {
     sprintf(buff_padded, "%s.png", "padded_image"); 
     int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
     
+    char buff_inpcrop_save[256];
+    int success_inpcrop_save = 0
+    char buff_outcrop_save[256];
+    int success_outcrop_save = 0
+    
     
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
     std::vector<int> nchw255 = {1, image_channel, 255, 255};
@@ -141,6 +146,11 @@ int main(int argc, char** argv) {
                     patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
                 }
             }
+            
+            sprintf(buff_inpcrop_save, "%s.png", "input_i1j1"); 
+            buff_inpcrop_save[10]=(char)j;
+            buff_inpcrop_save[8]=(char)j;
+            success_inpcrop_save = stbi_write_bmp(buff_padded, 255, 255, 3, patch_input_data);
 
             
             //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
@@ -151,6 +161,11 @@ int main(int argc, char** argv) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
                 patch_output_data = SR_output->output_data_patch;
             }
+            
+            sprintf(buff_inpcrop_save, "%s.png", "output_i1j1"); 
+            buff_inpcrop_save[11]=(char)j;
+            buff_inpcrop_save[9]=(char)j;
+            success_inpcrop_save = stbi_write_bmp(buff_padded, 510, 510, 3, patch_output_data);
             
             
             for (y = 0; y < 510; ++y) {
@@ -174,6 +189,7 @@ int main(int argc, char** argv) {
     
 
     char buff[256];
+    //sprintf(buff, "%s.jpg", "super_resolution"); //  save as jpg?
     sprintf(buff, "%s.png", "super_resolution"); //from TNNObjectDetector
     int success = stbi_write_bmp(buff, image_width*2, image_height*2, 3, output_data);
     if(!success) {
