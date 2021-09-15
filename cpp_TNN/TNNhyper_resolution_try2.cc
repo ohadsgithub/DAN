@@ -77,9 +77,9 @@ int main(int argc, char** argv) {
     int padded_height=h_blocks*255;
     int padded_width=w_blocks*255;
     
-    unsigned char *data_padded = new unsigned char[padded_height*image_width*3];
+    unsigned char *data_padded = new unsigned char[padded_height*padded_width*3];
     //uint8_t *data_padded = new uint8_t[padded_height*image_width*3];
-    for (int indxk = 0; indxk < image_width * image_height * 3; ++indxk) {
+    for (int indxk = 0; indxk < padded_width * padded_height * 3; ++indxk) {
         data_padded[indxk]=0;        
     }
     
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
     
     char buff_input2[256];
     sprintf(buff_input2, "%s.jpg", "input_image2"); 
-    int success_input2 = stbi_write_bmp(buff_input2, padded_width, image_height, 3, data);
+    int success_input2 = stbi_write_bmp(buff_input2, image_width, image_height, 3, data);
     
     char buff_padded2[256];
     sprintf(buff_padded2, "%s.jpg", "padded_image2"); 
