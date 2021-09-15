@@ -95,19 +95,19 @@ int main(int argc, char** argv) {
     
     char buff_input[256];
     sprintf(buff_input, "%s.png", "input_image"); 
-    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    int success_padded = stbi_write_bmp(buff_input, image_width, image_height, 3, data);
     
     char buff_padded[256];
     sprintf(buff_padded, "%s.png", "padded_image"); 
-    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    int success_input = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
     
     char buff_input2[256];
     sprintf(buff_input2, "%s.jpg", "input_image2"); 
-    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    int success_input2 = stbi_write_bmp(buff_input2, padded_width, image_height, 3, data);
     
     char buff_padded2[256];
     sprintf(buff_padded2, "%s.jpg", "padded_image2"); 
-    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    int success_padded2 = stbi_write_bmp(buff_padded2, padded_width, image_height, 3, data_padded);
     
     char buff_inpcrop_save[256];
     int success_inpcrop_save = 0;
@@ -174,10 +174,10 @@ int main(int argc, char** argv) {
                 patch_output_data = SR_output->output_data_patch;
             }
             
-            sprintf(buff_inpcrop_save, "%s.png", "output_i1j1"); 
-            buff_inpcrop_save[11]=(char)j;
-            buff_inpcrop_save[9]=(char)j;
-            success_inpcrop_save = stbi_write_bmp(buff_inpcrop_save, 510, 510, 3, patch_output_data);
+            sprintf(buff_outcrop_save, "%s.png", "output_i1j1"); 
+            buff_outcrop_save[11]=(char)j;
+            buff_outcrop_save[9]=(char)j;
+            success_outcrop_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data);
             
             
             for (y = 0; y < 510; ++y) {
