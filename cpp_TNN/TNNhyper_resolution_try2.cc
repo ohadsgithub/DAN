@@ -159,9 +159,9 @@ int main(int argc, char** argv) {
                 }
             }
             
-            sprintf(buff_inpcrop_save, "%s.png", "input_i1j1"); 
-            buff_inpcrop_save[10]=(char)j;
-            buff_inpcrop_save[8]=(char)j;
+            sprintf(buff_inpcrop_save, "input_i%dj%d.png", i, j); 
+            //buff_inpcrop_save[9]=(char)j;
+            //buff_inpcrop_save[7]=(char)i;
             success_inpcrop_save = stbi_write_bmp(buff_inpcrop_save, 255, 255, 3, patch_input_data);
 
             
@@ -174,9 +174,9 @@ int main(int argc, char** argv) {
                 patch_output_data = SR_output->output_data_patch;
             }
             
-            sprintf(buff_outcrop_save, "%s.png", "output_i1j1"); 
-            buff_outcrop_save[11]=(char)j;
-            buff_outcrop_save[9]=(char)j;
+            sprintf(buff_outcrop_save, "output_i%dj%d.png", i, j); 
+            //buff_outcrop_save[10]=(char)j;
+            //buff_outcrop_save[8]=(char)i;
             success_outcrop_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data);
             
             
