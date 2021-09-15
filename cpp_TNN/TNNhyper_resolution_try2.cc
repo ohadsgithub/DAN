@@ -93,8 +93,20 @@ int main(int argc, char** argv) {
         }
     }
     
+    char buff_input[256];
+    sprintf(buff_input, "%s.png", "input_image"); 
+    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    
     char buff_padded[256];
     sprintf(buff_padded, "%s.png", "padded_image"); 
+    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    
+    char buff_input2[256];
+    sprintf(buff_input2, "%s.jpg", "input_image2"); 
+    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    
+    char buff_padded2[256];
+    sprintf(buff_padded2, "%s.jpg", "padded_image2"); 
     int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
     
     char buff_inpcrop_save[256];
@@ -150,7 +162,7 @@ int main(int argc, char** argv) {
             sprintf(buff_inpcrop_save, "%s.png", "input_i1j1"); 
             buff_inpcrop_save[10]=(char)j;
             buff_inpcrop_save[8]=(char)j;
-            success_inpcrop_save = stbi_write_bmp(buff_padded, 255, 255, 3, patch_input_data);
+            success_inpcrop_save = stbi_write_bmp(buff_inpcrop_save, 255, 255, 3, patch_input_data);
 
             
             //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
@@ -165,7 +177,7 @@ int main(int argc, char** argv) {
             sprintf(buff_inpcrop_save, "%s.png", "output_i1j1"); 
             buff_inpcrop_save[11]=(char)j;
             buff_inpcrop_save[9]=(char)j;
-            success_inpcrop_save = stbi_write_bmp(buff_padded, 510, 510, 3, patch_output_data);
+            success_inpcrop_save = stbi_write_bmp(buff_inpcrop_save, 510, 510, 3, patch_output_data);
             
             
             for (y = 0; y < 510; ++y) {
@@ -177,9 +189,15 @@ int main(int argc, char** argv) {
                         //output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
                         //output_data[3*(x2+y2*2*image_width)+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
                         //output_data[3*(x2+y2*2*image_width)+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
-                        output_data[x2+y2*2*image_width]   = patch_output_data[3*(x+y*510)];
-                        output_data[x2+y2*2*image_width+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
-                        output_data[x2+y2*2*image_width+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
+                        
+                        
+                        //output_data[x2+y2*2*image_width]   = patch_output_data[3*(x+y*510)];
+                        //output_data[x2+y2*2*image_width+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
+                        //output_data[x2+y2*2*image_width+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
+                        
+                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
+                        output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data[3*(x+y*510)+1];
+                        output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data[3*(x+y*510)+2];
                     }
                 }
             }
