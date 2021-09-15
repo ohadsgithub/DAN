@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
     
     char buff_padded[256];
     sprintf(buff_padded, "%s.png", "padded_image"); 
-    int success_input = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    int success_input = stbi_write_bmp(buff_padded, padded_width, padded_height, 3, data_padded);
     
     char buff_input2[256];
     sprintf(buff_input2, "%s.jpg", "input_image2"); 
@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
     
     char buff_padded2[256];
     sprintf(buff_padded2, "%s.jpg", "padded_image2"); 
-    int success_padded2 = stbi_write_bmp(buff_padded2, padded_width, image_height, 3, data_padded);
+    int success_padded2 = stbi_write_bmp(buff_padded2, padded_width, padded_height, 3, data_padded);
     
     char buff_inpcrop_save[256];
     int success_inpcrop_save = 0;
