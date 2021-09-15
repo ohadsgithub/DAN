@@ -98,9 +98,9 @@ int main(int argc, char** argv) {
     int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
     
     char buff_inpcrop_save[256];
-    int success_inpcrop_save = 0
+    int success_inpcrop_save = 0;
     char buff_outcrop_save[256];
-    int success_outcrop_save = 0
+    int success_outcrop_save = 0;
     
     
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
