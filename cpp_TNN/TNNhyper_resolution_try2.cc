@@ -93,6 +93,10 @@ int main(int argc, char** argv) {
         }
     }
     
+    char buff_padded[256];
+    sprintf(buff_padded, "%s.png", "padded_image"); 
+    int success_padded = stbi_write_bmp(buff_padded, padded_width, image_height, 3, data_padded);
+    
     
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
     std::vector<int> nchw255 = {1, image_channel, 255, 255};
@@ -155,9 +159,12 @@ int main(int argc, char** argv) {
                     y2=y+j*510;
                     if ((x2<2*image_width) && (y2<2*image_height))
                     {
-                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
-                        output_data[3*(x2+y2*2*image_width)+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
-                        output_data[3*(x2+y2*2*image_width)+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
+                        //output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
+                        //output_data[3*(x2+y2*2*image_width)+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
+                        //output_data[3*(x2+y2*2*image_width)+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
+                        output_data[x2+y2*2*image_width]   = patch_output_data[3*(x+y*510)];
+                        output_data[x2+y2*2*image_width+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
+                        output_data[x2+y2*2*image_width+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
                     }
                 }
             }
