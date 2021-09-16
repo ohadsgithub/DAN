@@ -252,23 +252,23 @@ int main(int argc, char** argv) {
     int success3 = stbi_write_bmp(buff3, image_width*2, image_height*2, 3, output_data3);
     
     char buff4[256];
-    sprintf(buff4, "%s.png", "super_resolution3"); //from TNNObjectDetector
+    sprintf(buff4, "%s.png", "super_resolution4"); //from TNNObjectDetector
     int success4 = stbi_write_bmp(buff4, image_width*2, image_height*2, 3, output_data4);
     
     char buff5[256];
-    sprintf(buff5, "%s.png", "super_resolution3"); //from TNNObjectDetector
+    sprintf(buff5, "%s.png", "super_resolution5"); //from TNNObjectDetector
     int success5 = stbi_write_bmp(buff5, image_width*2, image_height*2, 3, output_data5);
     
     char buff6[256];
-    sprintf(buff3, "%s.png", "super_resolution3"); //from TNNObjectDetector
+    sprintf(buff6, "%s.png", "super_resolution6"); //from TNNObjectDetector
     int success6 = stbi_write_bmp(buff6, image_width*2, image_height*2, 3, output_data6);
     
-    char buff3[256];
-    sprintf(buff3, "%s.png", "super_resolution3"); //from TNNObjectDetector
+    char buff7[256];
+    sprintf(buff7, "%s.png", "super_resolution7"); //from TNNObjectDetector
     int success7 = stbi_write_bmp(buff7, image_width*2, image_height*2, 3, output_data7);
     
-    char buff3[256];
-    sprintf(buff3, "%s.png", "super_resolution3"); //from TNNObjectDetector
+    char buff8[256];
+    sprintf(buff8, "%s.png", "super_resolution8"); //from TNNObjectDetector
     int success8 = stbi_write_bmp(buff8, image_width*2, image_height*2, 3, output_data8);
     
     
