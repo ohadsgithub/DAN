@@ -120,6 +120,12 @@ int main(int argc, char** argv) {
    
     uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
     
+    uint8_t *output_data2 = new uint8_t[image_width*image_height*3*4];
+    uint8_t *output_data3 = new uint8_t[image_width*image_height*3*4];
+    //uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
+    //uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
+    //uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
+    
     //Init
     std::shared_ptr<TNNSDKOutput> sdk_output = predictor->CreateSDKOutput(); // inside for loop or ouside for loop?
 
@@ -198,12 +204,28 @@ int main(int argc, char** argv) {
                         output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
                         output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data[3*(x+y*510)+1];
                         output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data[3*(x+y*510)+2];
+                        
+                        output_data2[3*(x2+y2*2*image_width)]   = patch_output_data[x+3*y*510];
+                        output_data2[3*(x2+y2*2*image_width)]   = patch_output_data[x+510+3*y*510];
+                        output_data2[3*(x2+y2*2*image_width)]   = patch_output_data[x+2*510+3*y*510];
+                        
+                        output_data3[3*(x2+y2*2*image_width)]   = patch_output_data[x+y*510];
+                        output_data3[3*(x2+y2*2*image_width)]   = patch_output_data[x+y*510+510*510];
+                        output_data3[3*(x2+y2*2*image_width)]   = patch_output_data[x+y*510+2*510*510];
                     }
                 }
             }
             
         }
     }
+    
+    char buff2[256];
+    sprintf(buff2, "%s.png", "super_resolution2"); //from TNNObjectDetector
+    int success2 = stbi_write_bmp(buff2, image_width*2, image_height*2, 3, output_data2);
+    
+    char buff3[256];
+    sprintf(buff3, "%s.png", "super_resolution3"); //from TNNObjectDetector
+    int success3 = stbi_write_bmp(buff3, image_width*2, image_height*2, 3, output_data3);
     
 
     char buff[256];
