@@ -227,7 +227,7 @@ int main(int argc, char** argv) {
             }
             
             sprintf(buff_outcrop_reordered_save, "output_reordered_i%dj%d.png", i, j); 
-            success_outcrop_reordered_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data_reordered);
+            success_outcrop_reordered_save = stbi_write_bmp(buff_outcrop_reordered_save, 510, 510, 3, patch_output_data_reordered);
             
         }
     }
