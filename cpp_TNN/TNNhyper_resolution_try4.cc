@@ -184,7 +184,8 @@ int main(int argc, char** argv) {
                     y2=y+j*255;
                   
                   
-                    yics=(y-y_input_shift)%255;
+                    //yics=(y-y_input_shift)%255;
+                    yics=(y+y_input_shift)%255;
                   
                     patch_input_data[3*(x+yics*255)]   = data_padded[3*(x2+y2*padded_width)];
                     patch_input_data[3*(x+yics*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
