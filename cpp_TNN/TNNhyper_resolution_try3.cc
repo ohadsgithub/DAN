@@ -114,14 +114,17 @@ int main(int argc, char** argv) {
     char buff_outcrop_save[256];
     int success_outcrop_save = 0;
     
+    char buff_outcrop_reordered_save[256];
+    int success_outcrop_reordered_save = 0;
+    
     
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
     std::vector<int> nchw255 = {1, image_channel, 255, 255};
    
     uint8_t *output_data = new uint8_t[image_width*image_height*3*4];
     
-    uint8_t *output_data_mid = new uint8_t[image_width*image_height*3*4];
-    uint8_t *output_data_pre = new uint8_t[image_width*image_height*3*4];
+    //uint8_t *output_data_mid = new uint8_t[image_width*image_height*3*4];
+    //uint8_t *output_data_pre = new uint8_t[image_width*image_height*3*4];
 
 
     
@@ -147,6 +150,13 @@ int main(int argc, char** argv) {
     //uint8_t *patch_input_data = new uint8_t[255*255*3];
     uint8_t *patch_output_data = new uint8_t[510*510*3];
     
+    uint8_t *patch_output_data_reordered = new uint8_t[510*510*3];
+    
+    
+    int xshift=6;
+    int yshift=0;
+    
+    
     int x2=0;
     int y2=0;
     int i=0;
@@ -164,9 +174,8 @@ int main(int argc, char** argv) {
                 }
             }
             
+            
             sprintf(buff_inpcrop_save, "input_i%dj%d.png", i, j); 
-            //buff_inpcrop_save[9]=(char)j;
-            //buff_inpcrop_save[7]=(char)i;
             success_inpcrop_save = stbi_write_bmp(buff_inpcrop_save, 255, 255, 3, patch_input_data);
 
             
@@ -179,9 +188,8 @@ int main(int argc, char** argv) {
                 patch_output_data = SR_output->output_data_patch;
             }
             
+            
             sprintf(buff_outcrop_save, "output_i%dj%d.png", i, j); 
-            //buff_outcrop_save[10]=(char)j;
-            //buff_outcrop_save[8]=(char)i;
             success_outcrop_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data);
             
             
@@ -189,43 +197,48 @@ int main(int argc, char** argv) {
                 for (x = 0; x < 510; ++x) {
                     x2=x+i*510;
                     y2=y+j*510;
+                    
+                    patch_output_data_reordered[3*(x+y*510)]   = patch_output_data[x+y*510];
+                    patch_output_data_reordered[3*(x+y*510)+1]   = patch_output_data[x+y*510+510*510];
+                    patch_output_data_reordered[3*(x+y*510)+2]   = patch_output_data[x+y*510+2*510*510];
+                    
+                    
                     if ((x2<2*image_width) && (y2<2*image_height))
                     {
-                        //output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
-                        //output_data[3*(x2+y2*2*image_width)+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
-                        //output_data[3*(x2+y2*2*image_width)+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
                         
+                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data_reordered[3*(x+y*510)];
+                        output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data_reordered[3*(x+y*510)+1];
+                        output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data_reordered[3*(x+y*510)+2];
                         
-                        //output_data[x2+y2*2*image_width]   = patch_output_data[3*(x+y*510)];
-                        //output_data[x2+y2*2*image_width+4*image_width*image_height]   = patch_output_data[3*(x+y*510)+1];
-                        //output_data[x2+y2*2*image_width+8*image_width*image_height]   = patch_output_data[3*(x+y*510)+2];
+                        //output_data_pre[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
+                        //output_data_pre[3*(x2+y2*2*image_width)+1]   = patch_output_data[3*(x+y*510)+1];
+                        //output_data_pre[3*(x2+y2*2*image_width)+2]   = patch_output_data[3*(x+y*510)+2];
                         
-                        output_data_pre[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
-                        output_data_pre[3*(x2+y2*2*image_width)+1]   = patch_output_data[3*(x+y*510)+1];
-                        output_data_pre[3*(x2+y2*2*image_width)+2]   = patch_output_data[3*(x+y*510)+2];
+                        //output_data_mid[3*(x2+y2*2*image_width)]   = patch_output_data[x+3*y*510];
+                        //output_data_mid[3*(x2+y2*2*image_width)+1]   = patch_output_data[x+510+3*y*510];
+                        //output_data_mid[3*(x2+y2*2*image_width)+2]   = patch_output_data[x+2*510+3*y*510];
                         
-                        output_data_mid[3*(x2+y2*2*image_width)]   = patch_output_data[x+3*y*510];
-                        output_data_mid[3*(x2+y2*2*image_width)+1]   = patch_output_data[x+510+3*y*510];
-                        output_data_mid[3*(x2+y2*2*image_width)+2]   = patch_output_data[x+2*510+3*y*510];
-                        
-                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data[x+y*510];
-                        output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data[x+y*510+510*510];
-                        output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data[x+y*510+2*510*510];
+                        //output_data[3*(x2+y2*2*image_width)]   = patch_output_data[x+y*510];
+                        //output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data[x+y*510+510*510];
+                        //output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data[x+y*510+2*510*510];
                         
                     }
                 }
             }
             
+            sprintf(buff_outcrop_reordered_save, "output_reordered_i%dj%d.png", i, j); 
+            success_outcrop_reordered_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data_reordered);
+            
         }
     }
     
-    char buff_mid[256];
-    sprintf(buff2, "%s.png", "super_resolution_mid"); //from TNNObjectDetector
-    int success_mid = stbi_write_bmp(buff_mid, image_width*2, image_height*2, 3, output_data_mid);
+    //char buff_mid[256];
+    //sprintf(buff2, "%s.png", "super_resolution_mid"); //from TNNObjectDetector
+    //int success_mid = stbi_write_bmp(buff_mid, image_width*2, image_height*2, 3, output_data_mid);
     
-    char buff_pre[256];
-    sprintf(buff3, "%s.png", "super_resolution_pre"); //from TNNObjectDetector
-    int success_pre = stbi_write_bmp(buff_pre, image_width*2, image_height*2, 3, output_data_pre);
+    //char buff_pre[256];
+    //sprintf(buff3, "%s.png", "super_resolution_pre"); //from TNNObjectDetector
+    //int success_pre = stbi_write_bmp(buff_pre, image_width*2, image_height*2, 3, output_data_pre);
     
     
 
