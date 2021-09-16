@@ -153,12 +153,16 @@ int main(int argc, char** argv) {
     uint8_t *patch_output_data_reordered = new uint8_t[510*510*3];
     
     
-    int xshift=6;
+    int xshift=16; // why 16?
     int yshift=0;
     
     
     int x2=0;
     int y2=0;
+    
+    int xcs=0; //x circularly shifted
+    int ycs=0;
+    
     int i=0;
     for (int j = 0; j < h_blocks; ++j) {
         for (i = 0; i < w_blocks; ++i) {
@@ -198,9 +202,12 @@ int main(int argc, char** argv) {
                     x2=x+i*510;
                     y2=y+j*510;
                     
-                    patch_output_data_reordered[3*(x+y*510)]   = patch_output_data[x+y*510];
-                    patch_output_data_reordered[3*(x+y*510)+1]   = patch_output_data[x+y*510+510*510];
-                    patch_output_data_reordered[3*(x+y*510)+2]   = patch_output_data[x+y*510+2*510*510];
+                    xcs=(x+xshift)%510;
+                    ycs=(y+yshift)%510;
+                        
+                    patch_output_data_reordered[3*(x+y*510)]   = patch_output_data[xcs+y*510];
+                    patch_output_data_reordered[3*(x+y*510)+1]   = patch_output_data[xcs+y*510+510*510];
+                    patch_output_data_reordered[3*(x+y*510)+2]   = patch_output_data[xcs+y*510+2*510*510];
                     
                     
                     if ((x2<2*image_width) && (y2<2*image_height))
