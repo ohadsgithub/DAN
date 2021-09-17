@@ -259,12 +259,15 @@ int main(int argc, char** argv) {
                 }
             }
             
-            sprintf(buff_outcrop_save, "output_reordered_i%dj%d.png", i, j); 
+            sprintf(buff_outcrop_save, "output_corrected_i%dj%d.png", i, j); 
             success_outcrop_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data);
             
-            sprintf(buff_reflection_output_save, "output_reflected_reordered_i%dj%d.png", i, j); 
-            success_reflection_output_save = stbi_write_bmp(buff_reflection_output_save, 510, 510, 3, patch_output_data_reflected);
+            sprintf(buff_upper_reflection_output_save, "output_upper_reflected_reordered_i%dj%d.png", i, j); 
+            success_upper_reflection_output_save = stbi_write_bmp(buff_upper_reflection_output_save, 510, 510, 3, patch_output_upper_data_reflected);
             
+            sprintf(buff_lower_reflection_output_save, "output_lower_reflected_reordered_i%dj%d.png", i, j); 
+            success_lower_reflection_output_save = stbi_write_bmp(buff_lower_reflection_output_save, 510, 510, 3, patch_output_lower_data_reflected);
+
         }
     }
     
