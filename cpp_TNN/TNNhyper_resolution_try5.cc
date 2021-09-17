@@ -5,6 +5,8 @@
 #include <cmath>
 #include <iostream>
 
+#include <stdlib.h>
+
 #include "hyper_resolutor.h"
 #include "macro.h"
 #include "utils/utils.h"
@@ -147,6 +149,7 @@ int main(int argc, char** argv) {
     */
     
     unsigned char *patch_input_data = new unsigned char[255*255*3];
+    
     //uint8_t *patch_input_data = new uint8_t[255*255*3];
     uint8_t *patch_output_data = new uint8_t[510*510*3];
     
@@ -168,9 +171,15 @@ int main(int argc, char** argv) {
     //int yics=0;  
   
   
-    int special_y_cshift=16;
-    int special_y_padder=30;
-  
+    int special_y_cshift=8;
+    int special_y_padder=124;
+    int y3=0;
+    int y4=0;
+    
+    unsigned char *patch_input_reflected = new unsigned char[255*255*3];
+    unsigned char *patch_output_data_reflected = new unsigned char[510*510*3];
+    unsigned char *patch_output_data_reflected_reordered = new unsigned char[510*510*3];
+    
   
     int i=0;
     for (int j = 0; j < h_blocks; ++j) {
@@ -182,7 +191,8 @@ int main(int argc, char** argv) {
                     x2=x+i*255;
                     y2=y+j*255;
                   
-                  
+                    y3=254-abs(y-special_y_cshift-special_y_padder);
+                    
                     //yics=(y-y_input_shift)%255;
                     //yics=(y+y_input_shift)%255;
                     //patch_input_data[3*(x+yics*255)]   = data_padded[3*(x2+y2*padded_width)];
@@ -190,6 +200,10 @@ int main(int argc, char** argv) {
                     patch_input_data[3*(x+y*255)]   = data_padded[3*(x2+y2*padded_width)];
                     patch_input_data[3*(x+y*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
                     patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
+                    
+                    patch_input_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y3*255)];
+                    patch_input_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y3*255)+1];
+                    patch_input_reflected[3*(x+y*255)+2]   = patch_input_data[3*(x+y3*255)+2];
                   
                     //patch_input_data[3*(x+y*255)]   = data_padded[3*(x2+y2*padded_width)];
                     //patch_input_data[3*(x+y*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
@@ -216,17 +230,50 @@ int main(int argc, char** argv) {
             success_outcrop_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data);
             
             
+            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_reflected)), sdk_output));
+            if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
+                auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
+                patch_output_data_reflected = SR_output->output_data_patch;
+            }
+            
+            //for (y = 0; y < special_y_cshift; ++y) {
+                //for (x = 0; x < 510; ++x) {
+                    
+                  //  y4=
+
+                //    patch_output_data[x+y*510] = patch_output_data_reflected[x+y4*510];
+                //    patch_output_data[x+y*510+510*510] = patch_output_data_reflected[x+y4*510+510*510];
+               //     patch_output_data[x+y*510+2*510*510] = patch_output_data_reflected[x+y4*510+2*510*510];
+              //      
+             //       
+             //   }
+            //}
+            
+            
             for (y = 0; y < 510; ++y) {
                 for (x = 0; x < 510; ++x) {
                     x2=x+i*510;
                     y2=y+j*510;
                     
                     xcs=(x+xshift)%510;
-                    ycs=(y+yshift)%510;
+                    //ycs=(y+yshift)%510;
+                    ycs=(y+special_y_cshift)%510;
                         
-                    patch_output_data_reordered[3*(x+y*510)]   = patch_output_data[xcs+y*510];
-                    patch_output_data_reordered[3*(x+y*510)+1]   = patch_output_data[xcs+y*510+510*510];
-                    patch_output_data_reordered[3*(x+y*510)+2]   = patch_output_data[xcs+y*510+2*510*510];
+                    patch_output_data_reordered[3*(x+y*510)]   = patch_output_data[xcs+ycs*510];
+                    patch_output_data_reordered[3*(x+y*510)+1]   = patch_output_data[xcs+ycs*510+510*510];
+                    patch_output_data_reordered[3*(x+y*510)+2]   = patch_output_data[xcs+ycs*510+2*510*510];
+                    
+                    patch_output_data_reflected_reordered[3*(x+y*510)]   = patch_output_data_reflected[xcs+ycs*510];
+                    patch_output_data_reflected_reordered[3*(x+y*510)+1]   = patch_output_data_reflected[xcs+ycs*510+510*510];
+                    patch_output_data_reflected_reordered[3*(x+y*510)+2]   = patch_output_data_reflected[xcs+ycs*510+2*510*510];
+                    
+                    if (y>510-2*special_y_cshift-1) {
+                        y4=2*(special_y_padder+1)+(y-(510-2*special_y_cshift-1));
+                        
+                        patch_output_data_reordered[3*(x+y*510)]=patch_output_data_reflected_reordered[3*(x+y4*510)];
+                        patch_output_data_reordered[3*(x+y*510)+1]=patch_output_data_reflected_reordered[3*(x+y4*510)+1];
+                        patch_output_data_reordered[3*(x+y*510)+2]=patch_output_data_reflected_reordered[3*(x+y4*510)+2];
+                    }
                     
                     
                     if ((x2<2*image_width) && (y2<2*image_height))
