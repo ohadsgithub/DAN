@@ -233,18 +233,18 @@ int main(int argc, char** argv) {
 
                     
                     if (y>255) {
-                        y5=y-(510-2*orig_y_depth));
+                        y5=y-(510-2*orig_y_depth);
                         
-                        patch_output_data[3*(x+y*510)]=patch_output_data_reflected[3*(x+y4*510)];
-                        patch_output_data[3*(x+y*510)+1]=patch_output_data_reflected[3*(x+y4*510)+1];
-                        patch_output_data[3*(x+y*510)+2]=patch_output_data_reflected[3*(x+y4*510)+2];
+                        patch_output_data[3*(x+y*510)]=patch_output_lower_data_reflected[3*(x+y4*510)];
+                        patch_output_data[3*(x+y*510)+1]=patch_output_lower_data_reflected[3*(x+y4*510)+1];
+                        patch_output_data[3*(x+y*510)+2]=patch_output_lower_data_reflected[3*(x+y4*510)+2];
                     }
                     else {
                         y5=y+510-2*orig_y_depth+1;
                         
-                        patch_output_data[3*(x+y*510)]=patch_output_data_reflected[3*(x+y4*510)];
-                        patch_output_data[3*(x+y*510)+1]=patch_output_data_reflected[3*(x+y4*510)+1];
-                        patch_output_data[3*(x+y*510)+2]=patch_output_data_reflected[3*(x+y4*510)+2];
+                        patch_output_data[3*(x+y*510)]=patch_output_upper_data_reflected[3*(x+y4*510)];
+                        patch_output_data[3*(x+y*510)+1]=patch_output_upper_data_reflected[3*(x+y4*510)+1];
+                        patch_output_data[3*(x+y*510)+2]=patch_output_upper_data_reflected[3*(x+y4*510)+2];
                     }
                     
                     
