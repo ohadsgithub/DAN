@@ -116,10 +116,14 @@ int main(int argc, char** argv) {
     char buff_inpcrop_save[256];
     int success_inpcrop_save = 0;
     
-    char buff_reflection_input_save[256];
-    int success_reflection_input_save = 0;
-    char buff_reflection_output_save[256];
-    int success_reflection_output_save = 0;
+    char buff_lower_reflection_input_save[256];
+    int success_lower_reflection_input_save = 0;
+    char buff_upper_reflection_input_save[256];
+    int success_upper_reflection_input_save = 0;
+    char buff_lower_reflection_output_save[256];
+    int success_lower_reflection_output_save = 0;
+    char buff_upper_reflection_output_save[256];
+    int success_upper_reflection_output_save = 0;
     
     char buff_outcrop_save[256];
     int success_outcrop_save = 0;
@@ -145,16 +149,21 @@ int main(int argc, char** argv) {
     
     int special_y_padder=124;
     int special_y_cshift=6;
-    
+    //int upper_y=127;
+    //int lower_y=255-upper_y;
+    int orig_y_depth=200;
     
     int x2=0;
     int y2=0;
     
     int y3=0;
     int y4=0;
+    int y5=0;
     
-    unsigned char *patch_input_reflected = new unsigned char[255*255*3];
-    unsigned char *patch_output_data_reflected = new unsigned char[510*510*3];
+    unsigned char *patch_input_lower_reflected = new unsigned char[255*255*3];
+    unsigned char *patch_input_upper_reflected = new unsigned char[255*255*3];
+    unsigned char *patch_output_lower_data_reflected = new unsigned char[510*510*3];
+    unsigned char *patch_output_upper_data_reflected = new unsigned char[510*510*3];
     
   
     int i=0;
@@ -176,11 +185,16 @@ int main(int argc, char** argv) {
             for (y = 0; y < 255; ++y) {
                 for (x = 0; x < 255; ++x) {
                   
-                    y3=254-abs(y-special_y_cshift-special_y_padder);
+                    y3=254-abs(y-orig_y_depth+1);
+                    y4=abs((254-orig_y_depth)-y);
 
-                    patch_input_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y3*255)];
-                    patch_input_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y3*255)+1];
-                    patch_input_reflected[3*(x+y*255)+2]   = patch_input_data[3*(x+y3*255)+2];
+                    patch_input_lower_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y3*255)];
+                    patch_input_lower_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y3*255)+1];
+                    patch_input_lower_reflected[3*(x+y*255)+2]   = patch_input_data[3*(x+y3*255)+2];
+                    
+                    patch_input_upper_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y4*255)];
+                    patch_input_upper_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y4*255)+1];
+                    patch_input_upper_reflected[3*(x+y*255)+2]   = patch_input_data[3*(x+y4*255)+2];
 
                 }
             }
@@ -189,25 +203,26 @@ int main(int argc, char** argv) {
             sprintf(buff_inpcrop_save, "input_i%dj%d.png", i, j); 
             success_inpcrop_save = stbi_write_bmp(buff_inpcrop_save, 255, 255, 3, patch_input_data);
             
-            sprintf(buff_reflection_input_save, "input_reflected_i%dj%d.png", i, j); 
-            success_reflection_input_save = stbi_write_bmp(buff_reflection_input_save, 255, 255, 3, patch_input_reflected);
+            sprintf(buff_lower_reflection_input_save, "input_lower_reflected_i%dj%d.png", i, j); 
+            success_lower_reflection_input_save = stbi_write_bmp(buff_lower_reflection_input_save, 255, 255, 3, patch_input_lower_reflected);
+            
+            sprintf(buff_upper_reflection_input_save, "input_upper_reflected_i%dj%d.png", i, j); 
+            success_upper_reflection_input_save = stbi_write_bmp(buff_upper_reflection_input_save, 255, 255, 3, patch_input_upper_reflected);
 
             
             //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
-            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_data)), sdk_output));
-            
-            
+            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_lower_reflected)), sdk_output));
             if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
-                patch_output_data = SR_output->output_data_patch;
+                patch_output_lower_data_reflected = SR_output->output_data_patch;
             }
 
             
             
-            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_reflected)), sdk_output));
+            CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_upper_reflected)), sdk_output));
             if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
                 auto SR_output = dynamic_cast<HyperResolutorOutput *>(sdk_output.get());
-                patch_output_data_reflected = SR_output->output_data_patch;
+                patch_output_upper_data_reflected = SR_output->output_data_patch;
             }
             
             
@@ -217,8 +232,15 @@ int main(int argc, char** argv) {
                     y2=y+j*510;
 
                     
-                    if (y>510-2*special_y_cshift-1) {
-                        y4=2*(special_y_padder+1)+(y-(510-2*special_y_cshift-1));
+                    if (y>255) {
+                        y5=y-(510-2*orig_y_depth));
+                        
+                        patch_output_data[3*(x+y*510)]=patch_output_data_reflected[3*(x+y4*510)];
+                        patch_output_data[3*(x+y*510)+1]=patch_output_data_reflected[3*(x+y4*510)+1];
+                        patch_output_data[3*(x+y*510)+2]=patch_output_data_reflected[3*(x+y4*510)+2];
+                    }
+                    else {
+                        y5=y+510-2*orig_y_depth+1;
                         
                         patch_output_data[3*(x+y*510)]=patch_output_data_reflected[3*(x+y4*510)];
                         patch_output_data[3*(x+y*510)+1]=patch_output_data_reflected[3*(x+y4*510)+1];
