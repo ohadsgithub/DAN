@@ -64,6 +64,9 @@ Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
   
     uint8_t *output_data_patch = new uint8_t[510*510*3];
   
+    int y_cshift=8; // 4 originally. try 9? (no 2*y_cshift)
+    int x_cshift=16;
+  
     int x=0;
     int y=0;
     int xcs=0;
