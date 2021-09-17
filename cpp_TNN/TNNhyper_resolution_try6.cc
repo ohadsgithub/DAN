@@ -87,11 +87,22 @@ int main(int argc, char** argv) {
     
     int y=0;
     int x=0; //must be ordered in one of two ways? what about data type?
-    for (y = 0; y < image_height; ++y) {
-        for (x = 0; x < image_width; ++x) {
-            data_padded[3*(x+y*padded_width)]   = data[3*(x+y*image_width)];
-            data_padded[3*(x+y*padded_width)+1]   = data[3*(x+y*image_width)+1];
-            data_padded[3*(x+y*padded_width)+2]   = data[3*(x+y*image_width)+2]; //is there a need to divide by 255?
+    
+    int y_reflect=0;
+    int x_reflect=0;
+    
+    for (y = 0; y < padded_height; ++y) {
+        for (x = 0; x < padded_width; ++x) {
+            
+            if ((x<2*image_width) and (y<2*image_height)) {
+                
+                x_reflect=image_width-1-abs(x-image_width+1);
+                y_reflect=image_width-1-abs(y-image_height+1);
+                    
+                data_padded[3*(x+y*padded_width)]   = data[3*(x_reflect+y_reflect*image_width)];
+                data_padded[3*(x+y*padded_width)+1]   = data[3*(x_reflect+y_reflect*image_width)+1];
+                data_padded[3*(x+y*padded_width)+2]   = data[3*(x_reflect+y_reflect*image_width)+2]; //is there a need to divide by 255?
+            }
         }
     }
     
