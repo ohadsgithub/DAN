@@ -121,8 +121,8 @@ int main(int argc, char** argv) {
     char buff_reflection_output_save[256];
     int success_reflection_output_save = 0;
     
-    char buff_outcrop_reordered_save[256];
-    int success_outcrop_reordered_save = 0;
+    char buff_outcrop_save[256];
+    int success_outcrop_save = 0;
     
     
     std::vector<int> nchw2 = {1, image_channel, padded_height, padded_width};
@@ -142,8 +142,6 @@ int main(int argc, char** argv) {
 
     uint8_t *patch_output_data = new uint8_t[510*510*3];
     
-    uint8_t *patch_output_data_reordered = new uint8_t[510*510*3];
-    
     
     int xshift=16; // why 16?
     //int yshift=0;
@@ -152,24 +150,11 @@ int main(int argc, char** argv) {
     int x2=0;
     int y2=0;
     
-    int xcs=0; //x circularly shifted
-    int ycs=0;
-  
-  
-    //int y_input_shift=6;
-    //int yics=0;  
-  
-  
-    int special_y_cshift=6; //8 in 510
-    //int special_y_cshift=4; //8 in 510
-    int y_cshift=5; // 4 originally. try 9? (no 2*y_cshift)
-    int special_y_padder=124;
     int y3=0;
     int y4=0;
     
     unsigned char *patch_input_reflected = new unsigned char[255*255*3];
     unsigned char *patch_output_data_reflected = new unsigned char[510*510*3];
-    unsigned char *patch_output_data_reflected_reordered = new unsigned char[510*510*3];
     
   
     int i=0;
@@ -230,44 +215,33 @@ int main(int argc, char** argv) {
                 for (x = 0; x < 510; ++x) {
                     x2=x+i*510;
                     y2=y+j*510;
-                    
-                    xcs=(x+xshift)%510;
-                    //ycs=(y+yshift)%510;
-                    ycs=(y+2*y_cshift)%510;
-                        
-                    patch_output_data_reordered[3*(x+y*510)]   = patch_output_data[xcs+ycs*510];
-                    patch_output_data_reordered[3*(x+y*510)+1]   = patch_output_data[xcs+ycs*510+510*510];
-                    patch_output_data_reordered[3*(x+y*510)+2]   = patch_output_data[xcs+ycs*510+2*510*510];
-                    
-                    patch_output_data_reflected_reordered[3*(x+y*510)]   = patch_output_data_reflected[xcs+ycs*510];
-                    patch_output_data_reflected_reordered[3*(x+y*510)+1]   = patch_output_data_reflected[xcs+ycs*510+510*510];
-                    patch_output_data_reflected_reordered[3*(x+y*510)+2]   = patch_output_data_reflected[xcs+ycs*510+2*510*510];
+
                     
                     if (y>510-2*special_y_cshift-1) {
                         y4=2*(special_y_padder+1)+(y-(510-2*special_y_cshift-1));
                         
-                        patch_output_data_reordered[3*(x+y*510)]=patch_output_data_reflected_reordered[3*(x+y4*510)];
-                        patch_output_data_reordered[3*(x+y*510)+1]=patch_output_data_reflected_reordered[3*(x+y4*510)+1];
-                        patch_output_data_reordered[3*(x+y*510)+2]=patch_output_data_reflected_reordered[3*(x+y4*510)+2];
+                        patch_output_data[3*(x+y*510)]=patch_output_data_reflected[3*(x+y4*510)];
+                        patch_output_data[3*(x+y*510)+1]=patch_output_data_reflected[3*(x+y4*510)+1];
+                        patch_output_data[3*(x+y*510)+2]=patch_output_data_reflected[3*(x+y4*510)+2];
                     }
                     
                     
                     if ((x2<2*image_width) && (y2<2*image_height))
                     {
                         
-                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data_reordered[3*(x+y*510)];
-                        output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data_reordered[3*(x+y*510)+1];
-                        output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data_reordered[3*(x+y*510)+2];
+                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
+                        output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data[3*(x+y*510)+1];
+                        output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data[3*(x+y*510)+2];
                         
                     }
                 }
             }
             
-            sprintf(buff_outcrop_reordered_save, "output_reordered_i%dj%d.png", i, j); 
-            success_outcrop_reordered_save = stbi_write_bmp(buff_outcrop_reordered_save, 510, 510, 3, patch_output_data_reordered);
+            sprintf(buff_outcrop_save, "output_reordered_i%dj%d.png", i, j); 
+            success_outcrop_save = stbi_write_bmp(buff_outcrop_save, 510, 510, 3, patch_output_data);
             
             sprintf(buff_reflection_output_save, "output_reflected_reordered_i%dj%d.png", i, j); 
-            success_reflection_output_save = stbi_write_bmp(buff_reflection_output_save, 510, 510, 3, patch_output_data_reflected_reordered);
+            success_reflection_output_save = stbi_write_bmp(buff_reflection_output_save, 510, 510, 3, patch_output_data_reflected);
             
         }
     }
