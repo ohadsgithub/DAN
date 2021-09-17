@@ -143,8 +143,8 @@ int main(int argc, char** argv) {
     uint8_t *patch_output_data = new uint8_t[510*510*3];
     
     
-    int xshift=16; // why 16?
-    //int yshift=0;
+    int special_y_padder=124;
+    int special_y_cshift=6;
     
     
     int x2=0;
