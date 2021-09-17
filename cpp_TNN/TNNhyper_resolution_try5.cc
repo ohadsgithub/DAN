@@ -116,6 +116,11 @@ int main(int argc, char** argv) {
     char buff_outcrop_save[256];
     int success_outcrop_save = 0;
     
+    char buff_reflection_input_save[256];
+    int success_reflection_input_save = 0;
+    char buff_reflection_output_save[256];
+    int success_reflection_output_save = 0;
+    
     char buff_outcrop_reordered_save[256];
     int success_outcrop_reordered_save = 0;
     
@@ -214,6 +219,9 @@ int main(int argc, char** argv) {
             
             sprintf(buff_inpcrop_save, "input_i%dj%d.png", i, j); 
             success_inpcrop_save = stbi_write_bmp(buff_inpcrop_save, 255, 255, 3, patch_input_data);
+            
+            sprintf(buff_reflection_input_save, "input_reflected_i%dj%d.png", i, j); 
+            success_reflection_input_save = stbi_write_bmp(buff_reflection_input_save, 255, 255, 3, patch_input_reflected);
 
             
             //CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(image_mat), sdk_output));
@@ -301,6 +309,9 @@ int main(int argc, char** argv) {
             
             sprintf(buff_outcrop_reordered_save, "output_reordered_i%dj%d.png", i, j); 
             success_outcrop_reordered_save = stbi_write_bmp(buff_outcrop_reordered_save, 510, 510, 3, patch_output_data_reordered);
+            
+            sprintf(buff_reflection_output_save, "output_reflected_reordered_i%dj%d.png", i, j); 
+            success_reflection_output_save = stbi_write_bmp(buff_reflection_output_save, 510, 510, 3, patch_output_data_reflected_reordered);
             
         }
     }
