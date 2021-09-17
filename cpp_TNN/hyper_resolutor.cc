@@ -55,15 +55,29 @@ Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     
     auto output_mat_patch = output->GetMat();
     RETURN_VALUE_ON_NEQ(!output_mat_patch, false,
-                        Status(TNNERR_PARAM_ERR, "output_mat_scores is invalid"));
+                        Status(TNNERR_PARAM_ERR, "output_mat_patch is invalid"));
     
     
     //uint8_t *output_data_patch = (uint8_t*)output_mat_patch.get()->GetData();
     float *output_data_patch_real = (float*)output_mat_patch.get()->GetData();
-    uint8_t *output_data_patch = new uint8_t[510*510*3];
-    for (int indxj = 0; indxj < 510 * 510 * 3; ++indxj) {
-        output_data_patch[indxj]=(uint8_t)(255.0*output_data_patch_real[indxj]);        
+  
+  
+    //uint8_t *output_data_patch = new uint8_t[510*510*3];
+  
+    int x=0;
+    int y=0;
+  
+    for (y = 0; y < 510; ++y) {
+      for (x = 0; x < 510; ++x) {
+        xcs=(x+x_cshift)%510;
+        ycs=(y+y_cshift)%510;
+                        
+        output_data_patch[3*(x+y*510)]   = (uint8_t)(255.0*output_data_patch_real[xcs+ycs*510]);
+        output_data_patch[3*(x+y*510)+1]   = (uint8_t)(255.0*output_data_patch_real[xcs+ycs*510+510*510]);
+        output_data_patch[3*(x+y*510)+2]   = (uint8_t)(255.0*output_data_patch_real[xcs+ycs*510+2*510*510]);          
+      }
     }
+  
     //uint8_t *output_data_patch = (uint8_t*)(255.0*output_mat_patch.get())->GetData(); 
   
     output->output_data_patch = output_data_patch;
