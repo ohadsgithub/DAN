@@ -62,15 +62,17 @@ Status HyperResolutor::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     float *output_data_patch_real = (float*)output_mat_patch.get()->GetData();
   
   
-    //uint8_t *output_data_patch = new uint8_t[510*510*3];
+    uint8_t *output_data_patch = new uint8_t[510*510*3];
   
     int x=0;
     int y=0;
+    int xcs=0;
+    int ycs=0;
   
     for (y = 0; y < 510; ++y) {
       for (x = 0; x < 510; ++x) {
-        xcs=(x+x_cshift)%510;
-        ycs=(y+y_cshift)%510;
+        xcs=(x+this.x_cshift)%510;
+        ycs=(y+this.y_cshift)%510;
                         
         output_data_patch[3*(x+y*510)]   = (uint8_t)(255.0*output_data_patch_real[xcs+ycs*510]);
         output_data_patch[3*(x+y*510)+1]   = (uint8_t)(255.0*output_data_patch_real[xcs+ycs*510+510*510]);
