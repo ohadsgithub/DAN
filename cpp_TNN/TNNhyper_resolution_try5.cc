@@ -171,7 +171,7 @@ int main(int argc, char** argv) {
     //int yics=0;  
   
   
-    int special_y_cshift=8;
+    int special_y_cshift=4; //8 in 510
     int special_y_padder=124;
     int y3=0;
     int y4=0;
