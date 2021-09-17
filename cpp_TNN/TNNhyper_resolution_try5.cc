@@ -196,8 +196,6 @@ int main(int argc, char** argv) {
                     x2=x+i*255;
                     y2=y+j*255;
                   
-                    y3=254-abs(y-special_y_cshift-special_y_padder);
-                    
                     //yics=(y-y_input_shift)%255;
                     //yics=(y+y_input_shift)%255;
                     //patch_input_data[3*(x+yics*255)]   = data_padded[3*(x2+y2*padded_width)];
@@ -205,6 +203,29 @@ int main(int argc, char** argv) {
                     patch_input_data[3*(x+y*255)]   = data_padded[3*(x2+y2*padded_width)];
                     patch_input_data[3*(x+y*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
                     patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
+                    
+                    //patch_input_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y3*255)];
+                    //patch_input_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y3*255)+1];
+                    //patch_input_reflected[3*(x+y*255)+2]   = patch_input_data[3*(x+y3*255)+2];
+                  
+                    //patch_input_data[3*(x+y*255)]   = data_padded[3*(x2+y2*padded_width)];
+                    //patch_input_data[3*(x+y*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
+                    //patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
+                }
+            }
+            
+            for (y = 0; y < 255; ++y) {
+                for (x = 0; x < 255; ++x) {
+                  
+                    y3=254-abs(y-special_y_cshift-special_y_padder);
+                    
+                    //yics=(y-y_input_shift)%255;
+                    //yics=(y+y_input_shift)%255;
+                    //patch_input_data[3*(x+yics*255)]   = data_padded[3*(x2+y2*padded_width)];
+                  
+                    //patch_input_data[3*(x+y*255)]   = data_padded[3*(x2+y2*padded_width)];
+                    //patch_input_data[3*(x+y*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
+                    //patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
                     
                     patch_input_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y3*255)];
                     patch_input_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y3*255)+1];
@@ -265,7 +286,7 @@ int main(int argc, char** argv) {
                     
                     xcs=(x+xshift)%510;
                     //ycs=(y+yshift)%510;
-                    ycs=(y+special_y_cshift)%510;
+                    ycs=(y+2*special_y_cshift)%510;
                         
                     patch_output_data_reordered[3*(x+y*510)]   = patch_output_data[xcs+ycs*510];
                     patch_output_data_reordered[3*(x+y*510)+1]   = patch_output_data[xcs+ycs*510+510*510];
