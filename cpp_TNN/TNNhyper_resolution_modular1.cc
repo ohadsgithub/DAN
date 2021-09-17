@@ -82,6 +82,7 @@ int main(int argc, char** argv) {
     
     int y=0;
     int x=0;
+    int z=0;
     
     int y_reflect=0;
     int x_reflect=0;
@@ -159,6 +160,7 @@ int main(int argc, char** argv) {
     int y3=0;
     int y4=0;
     int y5=0;
+    int y6=0;
     
     unsigned char *patch_input_lower_reflected = new unsigned char[255*255*3];
     unsigned char *patch_input_upper_reflected = new unsigned char[255*255*3];
@@ -172,29 +174,28 @@ int main(int argc, char** argv) {
             
             for (y = 0; y < 255; ++y) {
                 for (x = 0; x < 255; ++x) {
-                    x2=x+i*255;
-                    y2=y+j*255;
+                    for (z = 0; z < 3; ++z) {
+                        x2=x+i*255;
+                        y2=y+j*255;
 
-                    patch_input_data[3*(x+y*255)]   = data_padded[3*(x2+y2*padded_width)];
-                    patch_input_data[3*(x+y*255)+1]   = data_padded[3*(x2+y2*padded_width)+1];
-                    patch_input_data[3*(x+y*255)+2]   = data_padded[3*(x2+y2*padded_width)+2];
+                        patch_input_data[3*(x+y*255)+z]   = data_padded[3*(x2+y2*padded_width)+z];
+                    }
 
                 }
             }
             
             for (y = 0; y < 255; ++y) {
                 for (x = 0; x < 255; ++x) {
+                    for (z = 0; z < 3; ++z) {
                   
-                    y3=254-abs(y-orig_y_depth+1);
-                    y4=abs((254-orig_y_depth)-y);
+                        y3=254-abs(y-orig_y_depth+1);
+                        y4=abs((254-orig_y_depth)-y);
 
-                    patch_input_lower_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y3*255)];
-                    patch_input_lower_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y3*255)+1];
-                    patch_input_lower_reflected[3*(x+y*255)+2]   = patch_input_data[3*(x+y3*255)+2];
-                    
-                    patch_input_upper_reflected[3*(x+y*255)]   = patch_input_data[3*(x+y4*255)];
-                    patch_input_upper_reflected[3*(x+y*255)+1]   = patch_input_data[3*(x+y4*255)+1];
-                    patch_input_upper_reflected[3*(x+y*255)+2]   = patch_input_data[3*(x+y4*255)+2];
+                        patch_input_lower_reflected[3*(x+y*255)+z]   = patch_input_data[3*(x+y3*255)+z];
+
+                        patch_input_upper_reflected[3*(x+y*255)+z]   = patch_input_data[3*(x+y4*255)+z];
+
+                    }
 
                 }
             }
@@ -228,33 +229,29 @@ int main(int argc, char** argv) {
             
             for (y = 0; y < 510; ++y) {
                 for (x = 0; x < 510; ++x) {
-                    x2=x+i*510;
-                    y2=y+j*510;
-
-                    
-                    if (y>255) {
+                    for (z = 0; z < 3; ++z) {
+                        x2=x+i*510;
+                        y2=y+j*510;
+                        
                         y5=y-(510-2*orig_y_depth);
-                        
-                        patch_output_data[3*(x+y*510)]=patch_output_lower_data_reflected[3*(x+y4*510)];
-                        patch_output_data[3*(x+y*510)+1]=patch_output_lower_data_reflected[3*(x+y4*510)+1];
-                        patch_output_data[3*(x+y*510)+2]=patch_output_lower_data_reflected[3*(x+y4*510)+2];
-                    }
-                    else {
-                        y5=y+510-2*orig_y_depth+1;
-                        
-                        patch_output_data[3*(x+y*510)]=patch_output_upper_data_reflected[3*(x+y4*510)];
-                        patch_output_data[3*(x+y*510)+1]=patch_output_upper_data_reflected[3*(x+y4*510)+1];
-                        patch_output_data[3*(x+y*510)+2]=patch_output_upper_data_reflected[3*(x+y4*510)+2];
-                    }
-                    
-                    
-                    if ((x2<2*image_width) && (y2<2*image_height))
-                    {
-                        
-                        output_data[3*(x2+y2*2*image_width)]   = patch_output_data[3*(x+y*510)];
-                        output_data[3*(x2+y2*2*image_width)+1]   = patch_output_data[3*(x+y*510)+1];
-                        output_data[3*(x2+y2*2*image_width)+2]   = patch_output_data[3*(x+y*510)+2];
-                        
+                        y6=y+510-2*orig_y_depth+1;
+
+                        if (abs(y-255)<2*orig_y_depth-255-10) {
+                            patch_output_data[3*(x+y*510)+z]=(patch_output_lower_data_reflected[3*(x+y5*510)+z]+patch_output_upper_data_reflected[3*(x+y6*510)+z])/2;
+                        }
+                        else {
+                            if (y<255) {
+                                patch_output_data[3*(x+y*510)+z]=patch_output_upper_data_reflected[3*(x+y6*510)+z];
+                            }
+                            else{
+                                patch_output_data[3*(x+y*510)+z]=patch_output_lower_data_reflected[3*(x+y6*510)+z];
+                            }
+                        }
+
+                        if ((x2<2*image_width) && (y2<2*image_height))
+                        {
+                            output_data[3*(x2+y2*2*image_width)+z]   = patch_output_data[3*(x+y*510)+z];
+                        }
                     }
                 }
             }
