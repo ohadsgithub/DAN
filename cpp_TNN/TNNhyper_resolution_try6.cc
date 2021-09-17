@@ -189,7 +189,7 @@ int main(int argc, char** argv) {
   
     int special_y_cshift=6; //8 in 510
     //int special_y_cshift=4; //8 in 510
-    int y_cshift=4;
+    int y_cshift=5; // 4 originally. try 9? (no 2*y_cshift)
     int special_y_padder=124;
     int y3=0;
     int y4=0;
