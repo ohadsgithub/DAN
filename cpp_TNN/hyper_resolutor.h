@@ -21,9 +21,12 @@ public:
     virtual ~HyperResolutorOutput(); // was HyperResolutorrOutput
     
     uint8_t *output_data_patch = new uint8_t[510*510*3];
-    float *output_data_patch_real = new float[510*510*3];//float or double?
+    //float *output_data_patch_real = new float[510*510*3];//float or double?
     //uint8_t *output_data_patch;
-    int special_y_cshift;
+    int special_y_cshift=6;
+    int y_cshift=8; // 4 originally. try 9? (no 2*y_cshift)
+    int x_cshift=16;
+    int special_y_padder=124;
     
 };
     
