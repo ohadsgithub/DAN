@@ -186,16 +186,11 @@ int main(int argc, char** argv) {
                         y5=y-(510-2*orig_y_depth);
                         y6=y+510-2*orig_y_depth+1;
 
-                        if (abs(y-255)<2*orig_y_depth-255-10) {
-                            patch_output_data[3*(x+y*510)+z]=(patch_output_lower_data_reflected[3*(x+y5*510)+z]+patch_output_upper_data_reflected[3*(x+y6*510)+z])/2;
+                        if (y<255) {
+                            patch_output_data[3*(x+y*510)+z]=patch_output_upper_data_reflected[3*(x+y6*510)+z];
                         }
-                        else {
-                            if (y<255) {
-                                patch_output_data[3*(x+y*510)+z]=patch_output_upper_data_reflected[3*(x+y6*510)+z];
-                            }
-                            else{
-                                patch_output_data[3*(x+y*510)+z]=patch_output_lower_data_reflected[3*(x+y5*510)+z];
-                            }
+                        else{
+                            patch_output_data[3*(x+y*510)+z]=patch_output_lower_data_reflected[3*(x+y5*510)+z];
                         }
 
                         if ((x2<2*image_width) && (y2<2*image_height))
