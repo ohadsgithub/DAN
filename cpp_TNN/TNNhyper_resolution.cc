@@ -134,6 +134,27 @@ int main(int argc, char** argv) {
     unsigned char *patch_input_upper_reflected = new unsigned char[255*255*3];
     unsigned char *patch_output_lower_data_reflected = new unsigned char[510*510*3];
     unsigned char *patch_output_upper_data_reflected = new unsigned char[510*510*3];
+    
+    char buff_output_patch[256];
+    success_write_img;
+    
+    char buff_input[256];
+    sprintf(buff_input, "%s.png", "input_image"); 
+    success_write_img = stbi_write_bmp(buff_input, image_width, image_height, 3, data);
+    
+    char buff_padded[256];
+    sprintf(buff_padded, "%s.png", "padded_image"); 
+    success_write_img = stbi_write_bmp(buff_padded, padded_width, padded_height, 3, data_padded);
+    
+    char buff_padded2[256];
+    sprintf(buff_padded2, "%s.jpg", "padded_image2"); 
+    success_write_img = stbi_write_bmp(buff_padded2, padded_width, padded_height, 3, data_padded);
+    
+    char buff_inpcrop_save[256];
+    char buff_lower_reflection_input_save[256];
+    char buff_upper_reflection_input_save[256];
+    char buff_lower_reflection_output_save[256];
+    char buff_upper_reflection_output_save[256];
   
   
     int i=0;
@@ -164,6 +185,15 @@ int main(int argc, char** argv) {
                     }
                 }
             }
+            
+            sprintf(buff_inpcrop_save, "input_i%dj%d.png", i, j); 
+            success_write_img = stbi_write_bmp(buff_inpcrop_save, 255, 255, 3, patch_input_data);
+            
+            sprintf(buff_lower_reflection_input_save, "input_lower_reflected_i%dj%d.png", i, j); 
+            success_write_img = stbi_write_bmp(buff_lower_reflection_input_save, 255, 255, 3, patch_input_lower_reflected);
+            
+            sprintf(buff_upper_reflection_input_save, "input_upper_reflected_i%dj%d.png", i, j); 
+            success_write_img = stbi_write_bmp(buff_upper_reflection_input_save, 255, 255, 3, patch_input_upper_reflected);
        
             CHECK_TNN_STATUS(predictor->Predict(std::make_shared<TNNSDKInput>(std::make_shared<TNN_NS::Mat>(TNN_NS::DEVICE_NAIVE, TNN_NS::N8UC3, nchw255, patch_input_lower_reflected)), sdk_output));
             if (sdk_output && dynamic_cast<HyperResolutorOutput *>(sdk_output.get())) {
@@ -199,7 +229,16 @@ int main(int argc, char** argv) {
                         }
                     }
                 }
-            }         
+            }
+            
+            sprintf(buff_output_patch, "output_corrected_i%dj%d.png", i, j); 
+            success_write_img = stbi_write_bmp(buff_output_patch, 510, 510, 3, patch_output_data);
+            
+            sprintf(buff_upper_reflection_output_save, "output_upper_reflected_i%dj%d.png", i, j); 
+            success_write_img = stbi_write_bmp(buff_upper_reflection_output_save, 510, 510, 3, patch_output_upper_data_reflected);
+            
+            sprintf(buff_lower_reflection_output_save, "output_lower_reflected_i%dj%d.png", i, j); 
+            success_write_img = stbi_write_bmp(buff_lower_reflection_output_save, 510, 510, 3, patch_output_lower_data_reflected);
         }
     }  
     
