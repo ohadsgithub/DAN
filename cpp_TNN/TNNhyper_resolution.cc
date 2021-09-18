@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
             if ((x<2*image_width) and (y<2*image_height)) {
                 
                 x_reflect=image_width-1-abs(x-image_width+1);
-                y_reflect=image_width-1-abs(y-image_height+1);
+                y_reflect=image_height-1-abs(y-image_height+1);
                     
                 data_padded[3*(x+y*padded_width)+z]   = data[3*(x_reflect+y_reflect*image_width)+z];
 
