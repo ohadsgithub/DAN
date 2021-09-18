@@ -229,7 +229,6 @@ int main(int argc, char** argv) {
     free(patch_input_upper_reflected);
     free(patch_input_data);
     free(patch_output_data);
-  
     
     return 0;
 }
