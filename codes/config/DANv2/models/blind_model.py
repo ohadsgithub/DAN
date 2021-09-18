@@ -18,6 +18,9 @@ from .base_model import BaseModel
 logger = logging.getLogger("base")
 
 
+import torch.nn.utils.prune as prune
+
+
 class B_Model(BaseModel):
     def __init__(self, opt):
         super(B_Model, self).__init__(opt)
@@ -274,5 +277,10 @@ class B_Model(BaseModel):
                   #dynamic_axes={'input' : {0 : 'batch_size'},    # variable length axes
                   #              'output' : {0 : 'batch_size'}}
                          )
+        
+    def print_named_parameters(self):
+        #self.netG.
+        #module = model.conv1
+        print(list(self.netG..named_parameters()))
  
         
