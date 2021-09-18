@@ -41,5 +41,5 @@ opt = option.dict_to_nonedict(opt)
 
 model = create_model(opt)
 
-model.makeONNX("DANv2_from_pretrained")
+model.print_named_parameters()
 
