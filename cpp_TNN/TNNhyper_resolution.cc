@@ -135,8 +135,8 @@ int main(int argc, char** argv) {
     unsigned char *patch_output_lower_data_reflected = new unsigned char[510*510*3];
     unsigned char *patch_output_upper_data_reflected = new unsigned char[510*510*3];
     
-    char buff_output_patch[256];
-    success_write_img;
+ 
+    int success_write_img;
     
     char buff_input[256];
     sprintf(buff_input, "%s.png", "input_image"); 
@@ -155,6 +155,7 @@ int main(int argc, char** argv) {
     char buff_upper_reflection_input_save[256];
     char buff_lower_reflection_output_save[256];
     char buff_upper_reflection_output_save[256];
+    char buff_output_patch[256];
   
   
     int i=0;
