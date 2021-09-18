@@ -244,7 +244,7 @@ int main(int argc, char** argv) {
                                 patch_output_data[3*(x+y*510)+z]=patch_output_upper_data_reflected[3*(x+y6*510)+z];
                             }
                             else{
-                                patch_output_data[3*(x+y*510)+z]=patch_output_lower_data_reflected[3*(x+y6*510)+z];
+                                patch_output_data[3*(x+y*510)+z]=patch_output_lower_data_reflected[3*(x+y5*510)+z];
                             }
                         }
 
