@@ -216,6 +216,10 @@ int main(int argc, char** argv) {
         printf("image saved\n");
     }
     
+    char buffjpg[256];
+    sprintf(buffjpg, "%s.jpg", "super_resolution");
+    int success_write_jpg = stbi_write_bmp(buffjpg, image_width*2, image_height*2, 3, output_data);
+    
     free(data);
     free(output_data);
     free(data_padded);
