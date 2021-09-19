@@ -161,6 +161,16 @@ def main():
     torch.backends.cudnn.benchmark = True
     # torch.backends.cudnn.deterministic = True
 
+    
+    
+    #############################################################################
+    
+    pruning_iterations=5
+    
+    for (pruning_iteration in range(pruning_iterations+1)):
+
+        if(pruning_iteration!=0):
+    
     #### create train and val dataloader
     dataset_ratio = 200  # enlarge the size of each epoch
     for phase, dataset_opt in opt["datasets"].items():
@@ -347,6 +357,8 @@ def main():
         model.save("latest")
         logger.info("End of Predictor and Corrector training.")
     tb_logger.close()
+    
+    if(avg_psnr)
     
     
     #start creating ONNX here
