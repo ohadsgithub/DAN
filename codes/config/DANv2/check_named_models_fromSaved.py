@@ -29,7 +29,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "-opt",
     type=str,
-    default="options/setting1/test/test_setting1_x2.yml",
+    default="options/setting1/test/test_setting1_x2_small.yml",
     help="Path to options YMAL file.",
 )
 
