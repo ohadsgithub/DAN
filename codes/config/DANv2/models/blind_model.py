@@ -281,6 +281,6 @@ class B_Model(BaseModel):
     def print_named_parameters(self):
         #self.netG.
         #module = model.conv1
-        print(list(self.netG..named_parameters()))
+        print(list(self.netG.named_parameters()))
  
         
