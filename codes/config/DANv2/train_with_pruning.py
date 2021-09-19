@@ -165,11 +165,6 @@ def main():
     
     #############################################################################
     
-    pruning_iterations=5
-    
-    for (pruning_iteration in range(pruning_iterations+1)):
-
-        if(pruning_iteration!=0):
     
     #### create train and val dataloader
     dataset_ratio = 200  # enlarge the size of each epoch
@@ -214,155 +209,171 @@ def main():
     assert train_loader is not None
     assert val_loader is not None
 
+    
+    
+    
+    
+    ###########################################################################################
     #### create model
     model = create_model(opt)  # load pretrained model of SFTMD
 
+    pruning_iterations=5
+    avg_psnr_stoppage=0 #in such case take previous network?
+    
+    for (pruning_iteration in range(pruning_iterations+1)):
+
+        if(pruning_iteration!=0):
+            #do pruning
+    
     #### resume training
-    if resume_state:
-        logger.info(
-            "Resuming training from epoch: {}, iter: {}.".format(
-                resume_state["epoch"], resume_state["iter"]
-            )
-        )
-
-        start_epoch = resume_state["epoch"]
-        current_step = resume_state["iter"]
-        model.resume_training(resume_state)  # handle optimizers and schedulers
-    else:
-        current_step = 0
-        start_epoch = 0
-
-    prepro = util.SRMDPreprocessing(
-        scale=opt["scale"], pca_matrix=pca_matrix, cuda=True, **opt["degradation"]
-    )
-    kernel_size = opt["degradation"]["ksize"]
-    padding = kernel_size // 2
-    #### training
-    logger.info(
-        "Start training from epoch: {:d}, iter: {:d}".format(start_epoch, current_step)
-    )
-    for epoch in range(start_epoch, total_epochs + 1):
-        if opt["dist"]:
-            train_sampler.set_epoch(epoch)
-        for _, train_data in enumerate(train_loader):
-            current_step += 1
-
-            if current_step > total_iters:
-                break
-            LR_img, ker_map, kernels = prepro(train_data["GT"], True)
-            LR_img = (LR_img * 255).round() / 255
-
-            model.feed_data(
-                LR_img, GT_img=train_data["GT"], ker_map=ker_map, kernel=kernels
-            )
-            model.optimize_parameters(current_step)
-            model.update_learning_rate(
-                current_step, warmup_iter=opt["train"]["warmup_iter"]
-            )
-            visuals = model.get_current_visuals()
-
-            if current_step % opt["logger"]["print_freq"] == 0:
-                logs = model.get_current_log()
-                message = "<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> ".format(
-                    epoch, current_step, model.get_current_learning_rate()
+        if resume_state:
+            logger.info(
+                "Resuming training from epoch: {}, iter: {}.".format(
+                    resume_state["epoch"], resume_state["iter"]
                 )
-                for k, v in logs.items():
-                    message += "{:s}: {:.4e} ".format(k, v)
-                    # tensorboard logger
-                    if opt["use_tb_logger"] and "debug" not in opt["name"]:
-                        if rank <= 0:
-                            tb_logger.add_scalar(k, v, current_step)
-                if rank == 0:
-                    logger.info(message)
+            )
 
-            # validation, to produce ker_map_list(fake)
-            if current_step % opt["train"]["val_freq"] == 0 and rank <= 0:
-                avg_psnr = 0.0
-                idx = 0
-                for _, val_data in enumerate(val_loader):
+            start_epoch = resume_state["epoch"]
+            current_step = resume_state["iter"]
+            model.resume_training(resume_state)  # handle optimizers and schedulers
+        else:
+            current_step = 0
+            start_epoch = 0
 
-                    # LR_img, ker_map = prepro(val_data['GT'])
-                    LR_img = val_data["LQ"]
-                    lr_img = util.tensor2img(LR_img)  # save LR image for reference
-                    
-                    #sampleInput=LR_img
-                    #print(list(sampleInput.size()))
+        prepro = util.SRMDPreprocessing(
+            scale=opt["scale"], pca_matrix=pca_matrix, cuda=True, **opt["degradation"]
+        )
+        kernel_size = opt["degradation"]["ksize"]
+        padding = kernel_size // 2
+        #### training
+        logger.info(
+            "Start training from epoch: {:d}, iter: {:d}".format(start_epoch, current_step)
+        )
+        for epoch in range(start_epoch, total_epochs + 1):
+            if opt["dist"]:
+                train_sampler.set_epoch(epoch)
+            for _, train_data in enumerate(train_loader):
+                current_step += 1
 
-                    # valid Predictor
-                    model.feed_data(LR_img, val_data["GT"])
-                    model.test()
-                    visuals = model.get_current_visuals()
+                if current_step > total_iters:
+                    break
+                LR_img, ker_map, kernels = prepro(train_data["GT"], True)
+                LR_img = (LR_img * 255).round() / 255
 
-                    # Save images for reference
-                    img_name = val_data["LQ_path"][0]
-                    img_dir = os.path.join(opt["path"]["val_images"], img_name)
-                    # img_dir = os.path.join(opt['path']['val_images'], str(current_step), '_', str(step))
-                    util.mkdir(img_dir)
-                    save_lr_path = os.path.join(img_dir, "{:s}_LR.png".format(img_name))
-                    util.save_img(lr_img, save_lr_path)
+                model.feed_data(
+                    LR_img, GT_img=train_data["GT"], ker_map=ker_map, kernel=kernels
+                )
+                model.optimize_parameters(current_step)
+                model.update_learning_rate(
+                    current_step, warmup_iter=opt["train"]["warmup_iter"]
+                )
+                visuals = model.get_current_visuals()
 
-                    sr_img = util.tensor2img(visuals["SR"].squeeze())  # uint8
-                    gt_img = util.tensor2img(visuals["GT"].squeeze())  # uint8
-
-                    save_img_path = os.path.join(
-                        img_dir, "{:s}_{:d}.png".format(img_name, current_step)
+                if current_step % opt["logger"]["print_freq"] == 0:
+                    logs = model.get_current_log()
+                    message = "<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> ".format(
+                        epoch, current_step, model.get_current_learning_rate()
                     )
+                    for k, v in logs.items():
+                        message += "{:s}: {:.4e} ".format(k, v)
+                        # tensorboard logger
+                        if opt["use_tb_logger"] and "debug" not in opt["name"]:
+                            if rank <= 0:
+                                tb_logger.add_scalar(k, v, current_step)
+                    if rank == 0:
+                        logger.info(message)
 
-                    kernel = (
-                        visuals["ker"]
-                        .numpy()
-                        .reshape(
-                            opt["degradation"]["ksize"], opt["degradation"]["ksize"]
+                # validation, to produce ker_map_list(fake)
+                if current_step % opt["train"]["val_freq"] == 0 and rank <= 0:
+                    avg_psnr = 0.0
+                    idx = 0
+                    for _, val_data in enumerate(val_loader):
+
+                        # LR_img, ker_map = prepro(val_data['GT'])
+                        LR_img = val_data["LQ"]
+                        lr_img = util.tensor2img(LR_img)  # save LR image for reference
+                    
+                        #sampleInput=LR_img
+                        #print(list(sampleInput.size()))
+
+                        # valid Predictor
+                        model.feed_data(LR_img, val_data["GT"])
+                        model.test()
+                        visuals = model.get_current_visuals()
+
+                        # Save images for reference
+                        img_name = val_data["LQ_path"][0]
+                        img_dir = os.path.join(opt["path"]["val_images"], img_name)
+                        # img_dir = os.path.join(opt['path']['val_images'], str(current_step), '_', str(step))
+                        util.mkdir(img_dir)
+                        save_lr_path = os.path.join(img_dir, "{:s}_LR.png".format(img_name))
+                        util.save_img(lr_img, save_lr_path)
+
+                        sr_img = util.tensor2img(visuals["SR"].squeeze())  # uint8
+                        gt_img = util.tensor2img(visuals["GT"].squeeze())  # uint8
+
+                        save_img_path = os.path.join(
+                            img_dir, "{:s}_{:d}.png".format(img_name, current_step)
+                        )
+
+                        kernel = (
+                            visuals["ker"]
+                            .numpy()
+                            .reshape(
+                                opt["degradation"]["ksize"], opt["degradation"]["ksize"]
+                            )
+                        )
+                        kernel = 1 / (np.max(kernel) + 1e-4) * 255 * kernel
+                        cv2.imwrite(save_img_path, kernel)
+                        util.save_img(sr_img, save_img_path)
+
+                        # calculate PSNR
+                        crop_size = opt["scale"]
+                        gt_img = gt_img / 255.0
+                        sr_img = sr_img / 255.0
+                        cropped_sr_img = sr_img[crop_size:-crop_size, crop_size:-crop_size]
+                        cropped_gt_img = gt_img[crop_size:-crop_size, crop_size:-crop_size]
+
+                        avg_psnr += util.calculate_psnr(
+                            cropped_sr_img * 255, cropped_gt_img * 255
+                        )
+                        idx += 1
+
+                    avg_psnr = avg_psnr / idx
+
+                    # log
+                    logger.info("# Validation # PSNR: {:.6f}".format(avg_psnr))
+                    logger_val = logging.getLogger("val")  # validation logger
+                    logger_val.info(
+                        "<epoch:{:3d}, iter:{:8,d}, psnr: {:.6f}".format(
+                            epoch, current_step, avg_psnr
                         )
                     )
-                    kernel = 1 / (np.max(kernel) + 1e-4) * 255 * kernel
-                    cv2.imwrite(save_img_path, kernel)
-                    util.save_img(sr_img, save_img_path)
+                    # tensorboard logger
+                    if opt["use_tb_logger"] and "debug" not in opt["name"]:
+                        tb_logger.add_scalar("psnr", avg_psnr, current_step)
 
-                    # calculate PSNR
-                    crop_size = opt["scale"]
-                    gt_img = gt_img / 255.0
-                    sr_img = sr_img / 255.0
-                    cropped_sr_img = sr_img[crop_size:-crop_size, crop_size:-crop_size]
-                    cropped_gt_img = gt_img[crop_size:-crop_size, crop_size:-crop_size]
+                #### save models and training states
+                if current_step % opt["logger"]["save_checkpoint_freq"] == 0:
+                    if rank <= 0:
+                        logger.info("Saving models and training states.")
+                        model.save(current_step)
+                        model.save_training_state(epoch, current_step)
 
-                    avg_psnr += util.calculate_psnr(
-                        cropped_sr_img * 255, cropped_gt_img * 255
-                    )
-                    idx += 1
-
-                avg_psnr = avg_psnr / idx
-
-                # log
-                logger.info("# Validation # PSNR: {:.6f}".format(avg_psnr))
-                logger_val = logging.getLogger("val")  # validation logger
-                logger_val.info(
-                    "<epoch:{:3d}, iter:{:8,d}, psnr: {:.6f}".format(
-                        epoch, current_step, avg_psnr
-                    )
-                )
-                # tensorboard logger
-                if opt["use_tb_logger"] and "debug" not in opt["name"]:
-                    tb_logger.add_scalar("psnr", avg_psnr, current_step)
-
-            #### save models and training states
-            if current_step % opt["logger"]["save_checkpoint_freq"] == 0:
-                if rank <= 0:
-                    logger.info("Saving models and training states.")
-                    model.save(current_step)
-                    model.save_training_state(epoch, current_step)
-
-    if rank <= 0:
-        logger.info("Saving the final model.")
-        model.save("latest")
-        logger.info("End of Predictor and Corrector training.")
-    tb_logger.close()
+        if rank <= 0:
+            logger.info("Saving the final model.")
+            model.save("latest")
+            logger.info("End of Predictor and Corrector training.")
+        #tb_logger.close()
     
-    if(avg_psnr)
+        if(avg_psnr<avg_psnr_stoppage):
+            break
+            
+    tb_logger.close()
     
     
     #start creating ONNX here
-    model.makeONNX("DANv2_with_mobilenetV2")
+    #model.makeONNX("DANv2_with_mobilenetV2")
 
 
 if __name__ == "__main__":
