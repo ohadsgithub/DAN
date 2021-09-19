@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
         for (x = 0; x < padded_width; ++x) {
           for (z = 0; z < 3; ++z) { 
             
-            if ((x<2*image_width) and (y<2*image_height)) {
+            if ((x<2*image_width-2) and (y<2*image_height-2)) {
                 
                 x_reflect=image_width-1-abs(x-image_width+1);
                 y_reflect=image_height-1-abs(y-image_height+1);
