@@ -225,6 +225,11 @@ def main():
 
         if(pruning_iteration!=0):
             #do pruning
+            
+            
+            model.init_model() #how to reinitialize the pruned model? only the surviving weights? keep mask?
+            
+            
     
     #### resume training
         if resume_state:
