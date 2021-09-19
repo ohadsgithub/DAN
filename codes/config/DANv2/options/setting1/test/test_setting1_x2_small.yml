@@ -44,6 +44,8 @@ network_G:
     input_para: 10
     loop: 4
     kernel_size: 21
+    width_mult_R: 0.7
+    width_mult_E: 0.7
 
 #### path
 path:
