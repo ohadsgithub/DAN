@@ -15,6 +15,7 @@ from IPython import embed
 
 import torch.onnx
 import torch.nn as nn
+import torch.nn.utils.prune as prune
 
 
 import options as option
