@@ -219,13 +219,14 @@ def main():
     model = create_model(opt)  # load pretrained model of SFTMD
 
     pruning_iterations=5
-    avg_psnr_stoppage=0 #in such case take previous network?
+    avg_psnr_stoppage=-1.0 #in such case take previous network?
+    avg_psnr=0.0
     
     for (pruning_iteration in range(pruning_iterations+1)):
 
         if(pruning_iteration!=0):
             #do pruning
-            
+            model.pruneConvolutions(someparam)
             
             model.init_model() #how to reinitialize the pruned model? only the surviving weights? keep mask?
             
@@ -365,15 +366,23 @@ def main():
                         logger.info("Saving models and training states.")
                         model.save(current_step)
                         model.save_training_state(epoch, current_step)
+                        
+                       
+        if(avg_psnr<avg_psnr_stoppage):
+            if rank <= 0:
+                logger.info("Saving the final model.")
+                model.save("latest_lowPSNR_"+str(pruning_iteration)+"pruneIter")
+                logger.info("End of Predictor and Corrector training.")    
+            break
 
         if rank <= 0:
             logger.info("Saving the final model.")
-            model.save("latest")
+            model.save("latest_"+str(pruning_iteration)+"pruneIter")
             logger.info("End of Predictor and Corrector training.")
         #tb_logger.close()
     
-        if(avg_psnr<avg_psnr_stoppage):
-            break
+        #if(avg_psnr<avg_psnr_stoppage):
+        #    break
             
     tb_logger.close()
     
