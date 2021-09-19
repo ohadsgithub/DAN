@@ -282,5 +282,10 @@ class B_Model(BaseModel):
         #self.netG.
         #module = model.conv1
         print(list(self.netG.named_parameters()))
+        
+    def pruneConvolutions(someParameters):
+        asdf=1
+        
+        
  
         
