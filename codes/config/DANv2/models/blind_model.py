@@ -285,15 +285,15 @@ class B_Model(BaseModel):
         #module = model.conv1
         print(list(self.netG.named_parameters()))
         
-    def structured_prune_experiment(self, dim):
+    def structured_prune_experiment(self, dimension1):
         #self.netG.
         #module = model.conv1
         for module_name, module in self.netG.named_modules():
             if module_name=='module.Estimator.body.body.4.body1.body.6.weight':
-                prune.ln_structured(module, name="weight", amount=0.5, 2, dim)
+                prune.ln_structured(module, name="weight", amount=0.5, n=2, dim=dimension1)
                 print(list(module.named_buffers()))
             if module_name=='module.Estimator.body.body.4.body1.body.4.weight':
-                prune.ln_structured(module, name="weight", amount=0.5, 2, dim)
+                prune.ln_structured(module, name="weight", amount=0.5, n=2, dim=dimension1)
                 print(list(module.named_buffers()))
                 
    
@@ -409,11 +409,11 @@ class B_Model(BaseModel):
     #is there no global structured pruning in 
     def L2_structured_local_pruning(self, conv2d_prune_amount=0.4):
                                 
-        dim=1 #?????????
+        dimension=1 #?????????
 
         for module_name, module in self.netG.named_modules():
             if isinstance(module, torch.nn.Conv2d):
-                prune.ln_structured(module, name="weight", amount=conv2d_prune_amount, 2, dim)#####dim=??????? different in 1x1 and 3x3?
+                prune.ln_structured(module, name="weight", amount=conv2d_prune_amount, n=2, dim=dimension1)#####dim=??????? different in 1x1 and 3x3?
 
         num_zeros, num_elements, sparsity = self.measure_global_sparsity(
             weight=True,
