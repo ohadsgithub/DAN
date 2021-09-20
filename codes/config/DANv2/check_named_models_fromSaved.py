@@ -52,7 +52,7 @@ model = create_model(opt)
 
 #model.print_named_parameters()
 
-dim=0
+dim=0 dim=0 seems to work
 model.structured_prune_experiment(dim)
 
 
