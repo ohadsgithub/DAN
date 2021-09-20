@@ -408,6 +408,8 @@ class B_Model(BaseModel):
     
     #is there no global structured pruning in 
     def L2_structured_local_pruning(self, conv2d_prune_amount=0.4):
+                                
+        dim=1 #?????????
 
         for module_name, module in self.netG.named_modules():
             if isinstance(module, torch.nn.Conv2d):
