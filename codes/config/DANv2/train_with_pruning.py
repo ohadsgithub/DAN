@@ -221,13 +221,15 @@ def main():
     pruning_iterations=5
     avg_psnr_stoppage=-1.0 #in such case take previous network?
     avg_psnr=0.0
+    Sparsity_stoppage=1.1
+    sparsity=0.0
     
     for (pruning_iteration in range(pruning_iterations+1)):
 
         if(pruning_iteration!=0):
             #do pruning
             model.pruneConvolutions(someparam)
-            
+            num_zeros, num_elements, sparsity = model.measure_global_sparsity(weight=True, bias=False, conv2d_use_mask=True)
             model.init_model() #how to reinitialize the pruned model? only the surviving weights? keep mask?
             
             
@@ -370,19 +372,28 @@ def main():
                        
         if(avg_psnr<avg_psnr_stoppage):
             if rank <= 0:
-                logger.info("Saving the final model.")
+                #logger.info("Saving the final model.")
                 model.save("latest_lowPSNR_"+str(pruning_iteration)+"pruneIter")
-                logger.info("End of Predictor and Corrector training.")    
+                logger.info("End of Predictor and Corrector training iteration "+str(pruning_iteration)+". But PSNR dropped low.")    
             break
 
         if rank <= 0:
-            logger.info("Saving the final model.")
+            #logger.info("Saving the final model.")
             model.save("latest_"+str(pruning_iteration)+"pruneIter")
-            logger.info("End of Predictor and Corrector training.")
+            #model.save("latest")
+            logger.info("End of Predictor and Corrector training iteration "+str(pruning_iteration)+".") 
+            
+        
         #tb_logger.close()
     
         #if(avg_psnr<avg_psnr_stoppage):
         #    break
+        
+    if rank <= 0: #what if the PSNR dropped?
+        model.remove_parameters()
+        logger.info("Saving the final model.")
+        model.save("latest")
+        logger.info("End of Predictor and Corrector training.")
             
     tb_logger.close()
     
