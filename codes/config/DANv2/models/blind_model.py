@@ -314,8 +314,8 @@ class B_Model(BaseModel):
         return num_zeros, num_elements, sparsity
     
     
-    
-    def measure_global_sparsity(model,
+    #on all conv2d or just inside DPCG?
+    def measure_global_sparsity(self,
                             weight=True,
                             bias=False,
                             conv2d_use_mask=False,
@@ -324,7 +324,7 @@ class B_Model(BaseModel):
         num_zeros = 0
         num_elements = 0
 
-        for module_name, module in model.named_modules():
+        for module_name, module in self.netG.named_modules():
 
             if isinstance(module, torch.nn.Conv2d):
 
