@@ -392,6 +392,24 @@ class B_Model(BaseModel):
         #print("Fine-tuning...")
             
         return 0
+                                
+    
+    #is there no global structured pruning in 
+    def L1_structured_local_pruning(self, conv2d_prune_amount=0.4):
+
+        for module_name, module in self.netG.named_modules():
+            if isinstance(module, torch.nn.Conv2d):
+                prune.ln_structured(module, name="weight", amount=conv2d_prune_amount, 2, dim)#####dim=? different in 1x1 and 3x3?
+
+        num_zeros, num_elements, sparsity = self.measure_global_sparsity(
+            weight=True,
+            bias=False,
+            conv2d_use_mask=True)
+
+        print("Global Sparsity:")
+        print("{:.2f}".format(sparsity))
+            
+        return 0                            
     
     
     def remove_parameters(self):
