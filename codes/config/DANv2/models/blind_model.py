@@ -394,6 +394,21 @@ class B_Model(BaseModel):
         #print("Fine-tuning...")
             
         return 0
+    
+    
+    def remove_parameters(this):
+
+        for module_name, module in self.netG.named_modules():
+            if isinstance(module, torch.nn.Conv2d):
+                try:
+                    prune.remove(module, "weight")
+                except:
+                    pass
+                try:
+                    prune.remove(module, "bias")
+                except:
+                    pass
+        return 0
   
 
         
