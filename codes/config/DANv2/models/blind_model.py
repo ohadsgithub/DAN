@@ -318,8 +318,7 @@ class B_Model(BaseModel):
     def measure_global_sparsity(self,
                             weight=True,
                             bias=False,
-                            conv2d_use_mask=False,
-                            linear_use_mask=False):
+                            conv2d_use_mask=False:
 
         num_zeros = 0
         num_elements = 0
@@ -380,8 +379,7 @@ class B_Model(BaseModel):
         num_zeros, num_elements, sparsity = self.measure_global_sparsity(
             weight=True,
             bias=False,
-            conv2d_use_mask=True,
-            linear_use_mask=False)
+            conv2d_use_mask=True)
 
         #print("Test Accuracy: {:.3f}".format(eval_accuracy))
         #print("Classification Report:")
