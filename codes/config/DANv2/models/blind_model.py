@@ -394,7 +394,7 @@ class B_Model(BaseModel):
         return 0
     
     
-    def remove_parameters(this):
+    def remove_parameters(self):
 
         for module_name, module in self.netG.named_modules():
             if isinstance(module, torch.nn.Conv2d):
