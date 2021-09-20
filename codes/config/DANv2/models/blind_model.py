@@ -336,6 +336,64 @@ class B_Model(BaseModel):
         sparsity = num_zeros / num_elements
 
         return num_zeros, num_elements, sparsity
+    
+    
+    
+    #what about structured pruning? both in one function or seperate functions?
+    def L1_Unstructured_pruning(self,
+                                 conv2d_prune_amount=0.4,
+                                 grouped_pruning=False):
+
+        #for i in range(num_iterations):
+
+            #print("Pruning and Finetuning {}/{}".format(i + 1, num_iterations))
+
+            #print("Pruning...")
+
+        if grouped_pruning == True:
+            # Global pruning
+            # I would rather call it grouped pruning.
+            parameters_to_prune = []
+            for module_name, module in self.netG.named_modules():
+                if isinstance(module, torch.nn.Conv2d):
+                    parameters_to_prune.append((module, "weight"))
+            prune.global_unstructured(
+                parameters_to_prune,
+                pruning_method=prune.L1Unstructured,
+                amount=conv2d_prune_amount,
+            )
+        else:
+            for module_name, module in self.netG.named_modules():
+                if isinstance(module, torch.nn.Conv2d):
+                    prune.l1_unstructured(module,
+                                          name="weight",
+                                          amount=conv2d_prune_amount)
+
+        #_, eval_accuracy = evaluate_model(model=model,
+        #                                test_loader=test_loader,
+        #                                device=device,
+        #                                criterion=None)
+
+        #classification_report = create_classification_report(
+        #    model=model, test_loader=test_loader, device=device)
+
+        num_zeros, num_elements, sparsity = self.measure_global_sparsity(
+            weight=True,
+            bias=False,
+            conv2d_use_mask=True,
+            linear_use_mask=False)
+
+        #print("Test Accuracy: {:.3f}".format(eval_accuracy))
+        #print("Classification Report:")
+        #print(classification_report)
+        print("Global Sparsity:")
+        print("{:.2f}".format(sparsity))
+
+        # print(model.conv1._forward_pre_hooks)
+
+        #print("Fine-tuning...")
+            
+        return 0
   
 
         
