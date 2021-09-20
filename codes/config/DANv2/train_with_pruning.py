@@ -221,7 +221,7 @@ def main():
     pruning_iterations=3
     avg_psnr_stoppage=-1.0 #in such case take previous network?
     avg_psnr=0.0
-    Sparsity_stoppage=1.1
+    sparsity_stoppage=1.1
     sparsity=0.0
     
     prune_per_iteration=0.25 #conv2d_prune_amount
@@ -392,7 +392,7 @@ def main():
             #model.save("latest")
             logger.info("End of Predictor and Corrector training iteration "+str(pruning_iteration)+".")
             
-        if(Sparsity>Sparsity_stoppage):
+        if(sparsity>sparsity_stoppage):
             logger.info("Sparsity goal reached at iteration iteration "+str(pruning_iteration)+".")
             break
             
