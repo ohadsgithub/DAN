@@ -33,6 +33,13 @@ parser.add_argument(
     help="Path to options YMAL file.",
 )
 
+parser.add_argument(
+    "-dim",
+    type=int,
+    default=1,
+    help="dim for structured prune experiment",
+)
+
 
 args = parser.parse_args()
 opt = option.parse(args.opt, is_train=False)
@@ -41,5 +48,8 @@ opt = option.dict_to_nonedict(opt)
 
 model = create_model(opt)
 
-model.print_named_parameters()
+#model.print_named_parameters()
+
+model.structured_prune_experiment()
+
 
