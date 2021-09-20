@@ -330,7 +330,7 @@ class B_Model(BaseModel):
     def measure_global_sparsity(self,
                             weight=True,
                             bias=False,
-                            conv2d_use_mask=False:
+                            conv2d_use_mask=False):
 
         num_zeros = 0
         num_elements = 0
