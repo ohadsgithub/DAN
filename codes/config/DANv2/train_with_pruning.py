@@ -233,7 +233,7 @@ def main():
             
             #model.pruneConvolutions(someparam)
             
-            model.L1_Unstructured_pruning(self, conv2d_prune_amount=prune_per_iteration, grouped_pruning=False)
+            model.L1_Unstructured_pruning(conv2d_prune_amount=prune_per_iteration, grouped_pruning=False)
             #delete pruned weights now or later?
             #model.remove_parameters()
             
