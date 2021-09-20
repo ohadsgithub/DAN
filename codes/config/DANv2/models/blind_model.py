@@ -300,7 +300,7 @@ class B_Model(BaseModel):
    
 
     
-    def measure_module_sparsity(module, weight=True, bias=False, use_mask=False):
+    def measure_module_sparsity(self, module, weight=True, bias=False, use_mask=False):
 
         num_zeros = 0
         num_elements = 0
@@ -340,7 +340,7 @@ class B_Model(BaseModel):
 
             if isinstance(module, torch.nn.Conv2d):
 
-                module_num_zeros, module_num_elements, _ = measure_module_sparsity(
+                module_num_zeros, module_num_elements, _ = self.measure_module_sparsity(
                     module, weight=weight, bias=bias, use_mask=conv2d_use_mask)
                 num_zeros += module_num_zeros
                 num_elements += module_num_elements
