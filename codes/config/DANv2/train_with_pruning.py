@@ -381,7 +381,11 @@ def main():
             #logger.info("Saving the final model.")
             model.save("latest_"+str(pruning_iteration)+"pruneIter")
             #model.save("latest")
-            logger.info("End of Predictor and Corrector training iteration "+str(pruning_iteration)+".") 
+            logger.info("End of Predictor and Corrector training iteration "+str(pruning_iteration)+".")
+            
+        if(Sparsity>Sparsity_stoppage):
+            logger.info("Sparsity goal reached at iteration iteration "+str(pruning_iteration)+".")
+            break
             
         
         #tb_logger.close()
