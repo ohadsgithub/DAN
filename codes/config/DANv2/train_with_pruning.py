@@ -224,6 +224,7 @@ def main():
         if(pruning_iteration!=0):
             #do pruning   
             model.L1_Unstructured_pruning(conv2d_prune_amount=prune_per_iteration, grouped_pruning=False)
+            #model.L2_structured_local_pruning(conv2d_prune_amount=prune_per_iteration)
             
             num_zeros, num_elements, sparsity = model.measure_global_sparsity(weight=True, bias=False, conv2d_use_mask=True)
             model.init_model()
