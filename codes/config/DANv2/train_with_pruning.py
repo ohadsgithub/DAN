@@ -218,7 +218,7 @@ def main():
     #### create model
     model = create_model(opt)  # load pretrained model of SFTMD
 
-    pruning_iterations=5
+    pruning_iterations=3
     avg_psnr_stoppage=-1.0 #in such case take previous network?
     avg_psnr=0.0
     Sparsity_stoppage=1.1
@@ -230,9 +230,16 @@ def main():
 
         if(pruning_iteration!=0):
             #do pruning
-            model.pruneConvolutions(someparam)
+            
+            #model.pruneConvolutions(someparam)
+            
+            model.L1_Unstructured_pruning(self, conv2d_prune_amount=prune_per_iteration, grouped_pruning=False)
+            #delete pruned weights now or later?
+            #model.remove_parameters()
+            
             num_zeros, num_elements, sparsity = model.measure_global_sparsity(weight=True, bias=False, conv2d_use_mask=True)
             model.init_model() #how to reinitialize the pruned model? only the surviving weights? keep mask?
+            
             
             
     
