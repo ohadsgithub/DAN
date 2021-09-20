@@ -226,7 +226,7 @@ def main():
     
     prune_per_iteration=0.25 #conv2d_prune_amount
     
-    for (pruning_iteration in range(pruning_iterations+1)):
+    for pruning_iteration in range(pruning_iterations+1):
 
         if(pruning_iteration!=0):
             #do pruning
