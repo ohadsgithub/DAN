@@ -289,10 +289,11 @@ class B_Model(BaseModel):
         #self.netG.
         #module = model.conv1
         for module_name, module in self.netG.named_modules():
-            if module_name=='module.Estimator.body.body.4.body1.body.6.weight':
+            print(module_name)
+            if module_name=='module.Estimator.body.body.4.body1.body.6':
                 prune.ln_structured(module, name="weight", amount=0.5, n=2, dim=dimension1)
                 print(list(module.named_buffers()))
-            if module_name=='module.Estimator.body.body.4.body1.body.4.weight':
+            if module_name=='module.Estimator.body.body.4.body1.body.4':
                 prune.ln_structured(module, name="weight", amount=0.5, n=2, dim=dimension1)
                 print(list(module.named_buffers()))
                 
