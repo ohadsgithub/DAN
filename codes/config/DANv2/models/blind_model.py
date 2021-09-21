@@ -286,7 +286,7 @@ class B_Model(BaseModel):
                   
 
     
-    def measure_module_sparsity(self, module, weight=True, bias=False, use_mask=False):
+    def module_sparsity(self, module, weight=True, bias=False, use_mask=False):
 
         num_zeros = 0
         num_elements = 0
@@ -314,10 +314,7 @@ class B_Model(BaseModel):
     
     
     #on all conv2d or just inside DPCG?
-    def measure_global_sparsity(self,
-                            weight=True,
-                            bias=False,
-                            conv2d_use_mask=False):
+    def global_sparsity(self, weight=True, bias=False, to_use_mask=False):
 
         num_zeros = 0
         num_elements = 0
@@ -326,8 +323,7 @@ class B_Model(BaseModel):
 
             if isinstance(module, torch.nn.Conv2d):
 
-                module_num_zeros, module_num_elements, _ = self.measure_module_sparsity(
-                    module, weight=weight, bias=bias, use_mask=conv2d_use_mask)
+                module_num_zeros, module_num_elements, _ = self.module_sparsity(module, weight=weight, bias=bias, use_mask=to_use_mask)
                 num_zeros += module_num_zeros
                 num_elements += module_num_elements
 
@@ -337,11 +333,9 @@ class B_Model(BaseModel):
     
     
 
-    def L1_Unstructured_pruning(self,
-                                 conv2d_prune_amount=0.4,
-                                 grouped_pruning=False):
+    def L1_Unstructured_pruning(self, prune_ratio=0.4, global_pruning=False):
 
-        if grouped_pruning == True:
+        if global_pruning == True:
             parameters_to_prune = []
             for module_name, module in self.netG.named_modules():
                 if isinstance(module, torch.nn.Conv2d):
@@ -349,40 +343,31 @@ class B_Model(BaseModel):
             prune.global_unstructured(
                 parameters_to_prune,
                 pruning_method=prune.L1Unstructured,
-                amount=conv2d_prune_amount,
-            )
+                amount=prune_ratio)
         else:
             for module_name, module in self.netG.named_modules():
                 if isinstance(module, torch.nn.Conv2d):
-                    prune.l1_unstructured(module,
-                                          name="weight",
-                                          amount=conv2d_prune_amount)
+                    prune.l1_unstructured(module, name="weight", amount=prune_ratio)
 
-        num_zeros, num_elements, sparsity = self.measure_global_sparsity(
-            weight=True,
-            bias=False,
-            conv2d_use_mask=True)
+        num_zeros, num_elements, sparsity = self.global_sparsity(weight=True, bias=False, to_use_mask=True)
 
-        print("Global Sparsity:")
-        print("{:.2f}".format(sparsity))
+        print("Global Sparsity is currently ")
+        print("{:.3f}".format(sparsity))
             
         return 0
                                 
     
     #is there no global structured pruning in torch.prune?
-    def L2_structured_local_pruning(self, conv2d_prune_amount=0.4):
+    def L2_structured_local_pruning(self, prune_ratio=0.4):
 
         for module_name, module in self.netG.named_modules():
             if isinstance(module, torch.nn.Conv2d):
-                prune.ln_structured(module, name="weight", amount=conv2d_prune_amount, n=2, dim=0)#####dim=??????? different in 1x1 and 3x3?
+                prune.ln_structured(module, name="weight", amount=prune_ratio, n=2, dim=0)#####dim=??????? different in 1x1 and 3x3?
 
-        num_zeros, num_elements, sparsity = self.measure_global_sparsity(
-            weight=True,
-            bias=False,
-            conv2d_use_mask=True)
+        num_zeros, num_elements, sparsity = self.global_sparsity(weight=True, bias=False, to_use_mask=True)
 
-        print("Global Sparsity:")
-        print("{:.2f}".format(sparsity))
+        print("Global Sparsity is currently ")
+        print("{:.3f}".format(sparsity))
             
         return 0                            
     
@@ -400,4 +385,5 @@ class B_Model(BaseModel):
                 except:
                     pass
         return 0
-        
+    
+    
